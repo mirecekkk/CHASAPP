@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHASA VLKOV BAR APP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #faf3e0;
+            --bg-sidebar: #ffffff;
+            --text-dark: #2c2c2c;
+            --accent-gold: #d4af37;
+            --accent-green: #28a745;
+            --accent-red: #e74c3c;
+            --shadow-card: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ----- LEVÁ ČÁST (MENU) ----- */
+        .menu-section {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        h2 { margin-top: 0; color: var(--text-dark); font-size: 1.8rem; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            padding-bottom: 50px;
+        }
+
+        .tile {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 220px;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--accent-gold);
+        }
+
+        .tile:active { transform: scale(0.95); }
+
+        .tile img {
+            width: 100%; height: 100px; object-fit: contain; margin-bottom: 10px;
+        }
+        .tile h3 { font-size: 1.1rem; margin: 5px 0; }
+        .tile .price { font-weight: 700; color: var(--accent-gold); font-size: 1.2rem; }
+
+        /* ----- PRAVÁ ČÁST (SIDEBAR) ----- */
+        .sidebar {
+            width: 380px;
+            background: var(--bg-sidebar);
+            border-left: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.03);
+            z-index: 10;
+        }
+
+        .sidebar-header { 
+            margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .history-btn {
+            background: #f0f0f0; border: none; padding: 5px 10px; border-radius: 8px;
+            cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #555;
+        }
+        .history-btn:hover { background: #e0e0e0; }
+        
+        .order-list { flex: 1; overflow-y: auto; margin-bottom: 20px; }
+
+        .order-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #f9f9f9; margin-bottom: 8px; padding: 10px 15px;
+            border-radius: 8px; animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .item-info { display: flex; align-items: center; gap: 10px; }
+        .count-badge { 
+            background: var(--accent-gold); color: white; font-weight: bold; 
+            padding: 2px 8px; border-radius: 6px; font-size: 0.9em;
+        }
+
+        .delete-btn {
+            background: none; border: none; color: #ccc; 
+            font-size: 1.2rem; cursor: pointer; padding: 0 5px;
+        }
+        .delete-btn:hover { color: var(--accent-red); }
+
+        .total-section { background: #f0f0f0; padding: 20px; border-radius: 15px; text-align: center; }
+        .total-price { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); margin: 5px 0 15px; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn { padding: 15px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; flex: 1; font-size: 1rem; }
+        .btn-pay { background: var(--accent-green); color: white; }
+        .btn-reset { background: var(--accent-red); color: white; }
+        .btn:active { filter: brightness(0.9); }
+
+        /* ----- MODÁLNÍ OKNO (HISTORIE) ----- */
+        .modal {
+            display: none; /* Skryté defaultně */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 100;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 500px; height: 80%;
+            border-radius: 20px; padding: 25px; display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        
+        .history-list { flex: 1; overflow-y: auto; border-top: 1px solid #eee; }
+        .history-item { padding: 15px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .history-time { color: #888; font-size: 0.8rem; margin-bottom: 5px; }
+        .history-details { display: flex; justify-content: space-between; font-weight: 600; }
+        
+        .grand-total-box {
+            background: var(--bg-cream); padding: 15px; border-radius: 10px;
+            text-align: center; margin-bottom: 15px; border: 1px solid var(--accent-gold);
+        }
+        .grand-total-price { font-size: 1.5rem; font-weight: 800; color: var(--accent-green); }
+        .clear-history { color: var(--accent-red); background: none; border: none; font-size: 0.8rem; cursor: pointer; text-decoration: underline; margin-top: 10px;}
+
+        /* ----- MOBILNÍ VERZE ----- */
+        @media (max-width: 850px) {
+            body { flex-direction: column; height: auto; overflow: auto; }
+            .sidebar { width: 100%; height: auto; border-left: none; border-top: 2px solid #ccc; position: sticky; bottom: 0; max-height: 50vh;}
+            .menu-section { overflow: visible; padding-bottom: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-section">
+        <h2>Nabídka</h2>
+        <div class="grid" id="menu"></div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3>Zábava Vlkov</h3>
+            <button class="history-btn" onclick="otevritHistorii()">📜 Historie a Tržba</button>
+        </div>
+
+        <div id="order-list" class="order-list">
+            <div style="text-align: center; color: #aaa; margin-top: 20px;">Košík je prázdný</div>
+        </div>
+
+        <div class="total-section">
+            <div style="font-size: 0.9em; text-transform: uppercase; color: #666;">Celkem k úhradě</div>
+            <div class="total-price" id="total-price">0 Kč</div>
+            
+            <div class="btn-group">
+                <button class="btn btn-reset" onclick="resetObjednavky()">ZRUŠIT</button>
+                <button class="btn btn-pay" onclick="zaplatit()">ZAPLACENO</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Historie</h3>
+                <button class="close-modal" onclick="zavritHistorii()">&times;</button>
+            </div>
+            
+            <div class="grand-total-box">
+                <div>Celková tržba:</div>
+                <div class="grand-total-price" id="grandTotal">0 Kč</div>
+                <button class="clear-history" onclick="vymazatHistorii()">Vymazat celou historii</button>
+            </div>
+
+            <div id="historyList" class="history-list">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- KONFIGURACE --- */
+        const sortiment = [
+            { id: 1, nazev: "Položka 1", cena: 10, foto: "ODKAZ NA FOTO" },
+            { id: 2, nazev: "Položka 2", cena: 20, foto: "ODKAZ NA FOTO" },
+            { id: 3, nazev: "Položka 3", cena: 330, foto: "ODKAZ NA FOTO" },
+            { id: 4, nazev: "Položka 4", cena: 40, foto: "ODKAZ NA FOTO" },
+            { id: 5, nazev: "Položka 5", cena: 50, foto: "ODKAZ NA FOTO" },
+            { id: 6, nazev: "Položka 6", cena: 60, foto: "ODKAZ NA FOTO" },
+            { id: 7, nazev: "Položka 7", cena: 70, foto: "ODKAZ NA FOTO" },
+            { id: 8, nazev: "Položka 8", cena: 80, foto: "ODKAZ NA FOTO" },
+            { id: 9, nazev: "Položka 9", cena: 90, foto: "ODKAZ NA FOTO" },
+            { id: 10, nazev: "Položka 10", cena: 100, foto: "ODKAZ NA FOTO" }
+        ];
+
+        /* --- STAV APLIKACE --- */
+        let kosikItems = {}; 
+        let celkovaCena = 0;
+        // Načtení historie z paměti prohlížeče při startu
+        let historieObjednavek = JSON.parse(localStorage.getItem('barApp_historie')) || [];
+
+        const menuDiv = document.getElementById('menu');
+        const priceDisplay = document.getElementById('total-price');
+        const orderListDisplay = document.getElementById('order-list');
+        const modal = document.getElementById('historyModal');
+        const historyListDiv = document.getElementById('historyList');
+        const grandTotalDisplay = document.getElementById('grandTotal');
+
+        // 1. Vykreslení dlaždic
+        sortiment.forEach(polozka => {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.onclick = () => pridatDoKosiku(polozka.nazev, polozka.cena);
+            tile.innerHTML = `
+                <img src="${polozka.foto}" alt="${polozka.nazev}">
+                <div>
+                    <h3>${polozka.nazev}</h3>
+                    <div class="price">${polozka.cena} Kč</div>
+                </div>
+            `;
+            menuDiv.appendChild(tile);
+        });
+
+        // 2. Logika košíku
+        function pridatDoKosiku(nazev, cena) {
+            if (kosikItems[nazev]) {
+                kosikItems[nazev].pocet += 1;
+                kosikItems[nazev].suma += cena;
+            } else {
+                kosikItems[nazev] = { pocet: 1, cenaZaKus: cena, suma: cena };
+            }
+            celkovaCena += cena;
+            aktualizujZobrazeni();
+        }
+
+        function odebratPolozku(nazev) {
+            if (!kosikItems[nazev]) return;
+            const cenaKusu = kosikItems[nazev].cenaZaKus;
+            celkovaCena -= cenaKusu;
+            if (kosikItems[nazev].pocet > 1) {
+                kosikItems[nazev].pocet -= 1;
+                kosikItems[nazev].suma -= cenaKusu;
+            } else {
+                delete kosikItems[nazev];
+            }
+            aktualizujZobrazeni();
+        }
+
+        function resetObjednavky() {
+            kosikItems = {};
+            celkovaCena = 0;
+            aktualizujZobrazeni();
+        }
+
+        function aktualizujZobrazeni() {
+            priceDisplay.innerText = celkovaCena + " Kč";
+            orderListDisplay.innerHTML = '';
+            if (Object.keys(kosikItems).length === 0) {
+                orderListDisplay.innerHTML = '<div style="text-align:center; color:#aaa; margin-top: 20px;">Košík je prázdný</div>';
+                return;
+            }
+            for (const [nazev, data] of Object.entries(kosikItems)) {
+                const radek = document.createElement('div');
+                radek.className = 'order-item';
+                radek.innerHTML = `
+                    <div class="item-info"><span class="count-badge">${data.pocet}x</span><span>${nazev}</span></div>
+                    <div class="item-info"><strong>${data.suma} Kč</strong><button class="delete-btn" onclick="odebratPolozku('${nazev}')">&times;</button></div>
+                `;
+                orderListDisplay.appendChild(radek);
+            }
+            orderListDisplay.scrollTop = orderListDisplay.scrollHeight;
+        }
+
+        // 3. LOGIKA PLATBY A HISTORIE
+        function zaplatit() {
+            if (celkovaCena === 0) return;
+
+            // Vytvoření záznamu o objednávce
+            const zaznam = {
+                cas: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                polozky: {...kosikItems}, // kopie objektu
+                cenaCelkem: celkovaCena
+            };
+
+            // Přidání do pole historie a uložení do LocalStorage
+            historieObjednavek.push(zaznam);
+            localStorage.setItem('barApp_historie', JSON.stringify(historieObjednavek));
+
+            // Vizuální potvrzení a reset
+            // Můžete odkomentovat alert, pokud ho chcete: alert(`Zaplaceno: ${celkovaCena} Kč`);
+            resetObjednavky();
+        }
+
+        // 4. PRÁCE S MODÁLNÍM OKNEM HISTORIE
+        function otevritHistorii() {
+            modal.style.display = 'flex';
+            vykreslitHistorii();
+        }
+
+        function zavritHistorii() {
+            modal.style.display = 'none';
+        }
+
+        function vykreslitHistorii() {
+            historyListDiv.innerHTML = '';
+            let celkovaTrzba = 0;
+
+            // Projdeme historii od konce (nejnovější nahoře)
+            [...historieObjednavek].reverse().forEach((objednavka, index) => {
+                celkovaTrzba += objednavka.cenaCelkem;
+
+                // Vytvoření textového popisu položek (např. "2x Pivo, 1x Rum")
+                let popisPolozek = [];
+                for (const [nazev, data] of Object.entries(objednavka.polozky)) {
+                    popisPolozek.push(`${data.pocet}x ${nazev}`);
+                }
+
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div class="history-time">${objednavka.cas}</div>
+                    <div class="history-details">
+                        <span>${popisPolozek.join(', ')}</span>
+                        <span>${objednavka.cenaCelkem} Kč</span>
+                    </div>
+                `;
+                historyListDiv.appendChild(div);
+            });
+
+            grandTotalDisplay.innerText = celkovaTrzba + " Kč";
+        }
+
+        function vymazatHistorii() {
+            if(confirm("Opravdu smazat celou historii tržeb?")) {
+                historieObjednavek = [];
+                localStorage.removeItem('barApp_historie');
+                vykreslitHistorii();
+            }
+        }
+
+        // Zavření modálu kliknutím mimo
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                zavritHistorii();
+            }
+        }
+    </script>
+</body>
+</html>
