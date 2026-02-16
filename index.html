@@ -138,11 +138,11 @@
         // --- IDENTITY ---
         let deviceID = localStorage.getItem('bar_device_id') || 'Pokladna-' + Math.random().toString(36).substr(2, 4).toUpperCase();
         localStorage.setItem('bar_device_id', deviceID);
-        const updateIDDisplay = () => document.getElementById('device-display').innerText = `Číšník: ${deviceID}`;
+        const updateIDDisplay = () => document.getElementById('device-display').innerText = `Místo: ${deviceID}`;
         updateIDDisplay();
 
         document.getElementById('device-display').onclick = () => {
-            const n = prompt("Změnit jméno číšníka:", deviceID);
+            const n = prompt("napiš podle toho kde jsi. (bar, výčep, vstup, šatna):", deviceID);
             if(n) { deviceID = n; localStorage.setItem('bar_device_id', n); updateIDDisplay(); }
         };
 
@@ -198,7 +198,7 @@
         };
 
         window.smazatZaznam = (id) => {
-            if(confirm("Smazat tuto konkrétní objednávku?")) remove(ref(db, `bar_data/historie/${id}`));
+            if(confirm("Smazat?")) remove(ref(db, `bar_data/historie/${id}`));
         };
 
         function vykresliHistorii() {
@@ -231,11 +231,11 @@
 
         document.getElementById('btn-archivovat-vse').onclick = () => {
             if (historieDat.length === 0) return alert("Není co archivovat.");
-            if(confirm("Tato akce přesune aktuální tržbu do archivu v databázi a vyčistí seznam. Pokračovat?")) {
+            if(confirm("Tímhle smažeš celou třžbu ale mám archiv:D")) {
                 const archiveID = new Date().toISOString().replace(/\./g, '_');
                 set(ref(db, 'bar_data/archiv/' + archiveID), { data: historieDat, export_cas: new Date().toLocaleString(), total: document.getElementById('grandTotal').innerText }).then(() => {
                     remove(barRef);
-                    alert("Hotovo. Data najdete v Firebase složce 'archiv'.");
+                    alert("Hotovo.");
                 });
             }
         };
