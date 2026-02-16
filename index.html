@@ -100,7 +100,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h3>Pokladna</h3>
-            <button class="tab-btn" style="padding: 5px 10px;" id="btn-historie">📜 Tržba</button>
+            <button class="tab-btn" style="padding: 5px 10px;" id="btn-historie">Tržba</button>
         </div>
         <div id="order-list" class="order-list"></div>
         <div class="total-section">
@@ -139,7 +139,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Tvoje konfigurace
+        // Firebase moje údaje
         const firebaseConfig = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -157,14 +157,14 @@
         const barRef = ref(db, 'bar_data/historie');
 
         const sortiment = [
-            { id: 1, nazev: "Slivovice", cena: 50, kat: "Panáky", foto: "https://via.placeholder.com/100?text=🥃" },
-            { id: 2, nazev: "Hruškovice", cena: 50, kat: "Panáky", foto: "https://via.placeholder.com/100?text=🥃" },
-            { id: 3, nazev: "Rum", cena: 40, kat: "Panáky", foto: "https://via.placeholder.com/100?text=🥃" },
-            { id: 4, nazev: "Pivo 12°", cena: 50, kat: "Pivo", foto: "https://via.placeholder.com/100?text=🍺" },
-            { id: 5, nazev: "Pivo 10°", cena: 40, kat: "Pivo", foto: "https://via.placeholder.com/100?text=🍺" },
-            { id: 6, nazev: "Nealko Pivo", cena: 35, kat: "Pivo", foto: "https://via.placeholder.com/100?text=🍺" },
-            { id: 7, nazev: "Vstupné Dospělí", cena: 200, kat: "Vstup", foto: "https://via.placeholder.com/100?text=🎟️" },
-            { id: 8, nazev: "Vstupné Student", cena: 100, kat: "Vstup", foto: "https://via.placeholder.com/100?text=🎟️" }
+            { id: 1, nazev: "Slivovice", cena: 50, kat: "Panáky", foto: "odkaz na foto" },
+            { id: 2, nazev: "Hruškovice", cena: 50, kat: "Panáky", foto: "odkaz na foto" },
+            { id: 3, nazev: "Rum", cena: 40, kat: "Panáky", foto: "odkaz na foto" },
+            { id: 4, nazev: "Pivo 12°", cena: 50, kat: "Pivo", foto: "odkaz na foto" },
+            { id: 5, nazev: "Pivo 10°", cena: 40, kat: "Pivo", foto: "odkaz na foto" },
+            { id: 6, nazev: "Nealko Pivo", cena: 35, kat: "Pivo", foto: "odkaz na foto" },
+            { id: 7, nazev: "Vstupné Dospělí", cena: 200, kat: "Vstup", foto: "odkaz na foto" },
+            { id: 8, nazev: "Vstupné Student", cena: 100, kat: "Vstup", foto: "odkaz na foto" }
         ];
 
         let kosikItems = {}; 
