@@ -315,7 +315,6 @@
         <div class="total-section">
             <div class="total-price" id="total-price">0 Kč</div>
             <div class="btn-group">
-                <button class="btn btn-reset" id="btn-reset-kosik">Smazat</button>
                 <button class="btn btn-pay" id="btn-zaplatit">ZAPLATIT</button>
             </div>
         </div>
@@ -520,12 +519,6 @@
 
         document.getElementById('btn-zavrit-historii').onclick = () => {
             document.getElementById('historyModal').style.display = 'none';
-        };
-
-        document.getElementById('btn-reset-kosik').onclick = () => { 
-            kosikItems = {}; 
-            celkovaCena = 0; 
-            aktualizujZobrazeni(); 
         };
 
         // --- Filtry kategorií ---
