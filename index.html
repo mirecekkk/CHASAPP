@@ -499,8 +499,8 @@
         };
 
         document.getElementById('btn-archivovat-vse').onclick = () => {
-            if (historieDat.length === 0) return alert("Není co archivovat.");
-            if(confirm("Tímhle smažeš celou tržbu, ale vytvořím archiv. Pokračovat?")) {
+            if (historieDat.length === 0) return alert("a co mam jako archivovat kamo?.");
+            if(confirm("Teď to smažeš ale mám archiv haha:D")) {
                 const archiveID = new Date().toISOString().replace(/\./g, '_');
                 set(ref(db, 'bar_data/archiv/' + archiveID), { 
                     data: historieDat, 
@@ -508,7 +508,7 @@
                     total: document.getElementById('grandTotal').innerText 
                 }).then(() => {
                     remove(barRef);
-                    alert("Tržba archivována a vyčištěna.");
+                    alert("Hotovo (porad mam archiv haha:D)");
                 });
             }
         };
