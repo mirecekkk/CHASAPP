@@ -25,6 +25,21 @@
             display: flex;
             overflow: hidden;
         }
+
+        /* --- STYL PRO TVŮJ ASCII ART --- */
+        .ascii-art {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 1.1;
+            font-size: 8px; /* Menší písmo, aby drak neutekl z obrazovky */
+            color: var(--accent-gold);
+            margin: 10px 0;
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
         .menu-section { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
         .category-tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn {
@@ -68,12 +83,45 @@
         @media (max-width: 850px) {
             body { flex-direction: column; overflow: auto; }
             .sidebar { width: 100%; height: auto; position: sticky; bottom: 0; }
+            .ascii-art { font-size: 5px; } /* Ještě menší drak na mobilu */
         }
     </style>
 </head>
 <body>
     <div class="menu-section">
         <h2 id="device-display">Načítám...</h2>
+
+        <pre class="ascii-art">
+                        _
+               ,S/  .e.##ee
+             ,SS/_ /#####""
+           ,SSSSSS`|##|
+         ,'|SSSSSS/%##|
+         | ;SSSSS/%%%/ .-""-._                            __..ooo._.sSSSSSSSSS"7.
+         |/SSSSS/%%%/.'       `._ __                _.od888888888888"'  '"SSSSS"
+      ___  `"SSS/%%%/"-.,sSSs._   8888o._    __.o888888888""SS""     `-._    `7Sb
+ _.sssSSSSSSSSSSS/`%%/ ,sSSSSSSSSS-.888888888888888888888"'.S"          ,SSS""    `7b
+,+""       ```""SS/%%./,sSSSSSSSS".   `"888888888888888"'.sSS"          ,SS"'         `S.
+                    /%%%/sSSSSSSSS"   `s.   `"88888888"'.sSSSS"          ,S"'             7
+                   /%%%/ `SSSSSSS$$,..sSS`-.   `"88'.sSSSSSSSS._      ,-'
+                  /%%%/    `SSSS$$$$SSS",\\`-.   `"SSSSSS"  8"""7.-'
+                  /`%/      `SS$$$SSS,dP,s.\\//`-.   `SS" ,'`8       ,ee888888ee.
+        ,oo8888oo/ /          `"""",d88Pd8888./,-'/`.  `,-._`d'     ,d8888888888888b.
+     ,d888888888/ /8b.           d8888Pd8888888bd88b`.  :_._`8    ,888888"'     '""88888.
+   ,888P'      / /"888b.       d88888`8888888Pd8888 :  :_`-.( ,d8888.__            7888b.
+  d88P         / /   `788b     (88888:. `8888Pd88888 ;  ; `-._ 8888P_Z_.>-""--.._   `8888
+ d88'      ,--/ /      `88b     `88888b`. `8P 78888";  ;      `"*88_,"    s88s.        `888b
+d88'     ,',$/ /$$$$.   `88b      `8888b `. `"'88"_/_,'`-._          `-.d8"88"8P.      `888.
+888    ; ,$$$$$$$$$'    888        `"8'   `---------------`-.._      8888888888       888'
+888    : `$$$$$$$':      888                                  '888b`-._8s888888"P      .888'
+788.   `  `$$$$'  ;      88P                                   8888.   "8878888P'      d888
+ 88b    `.  `"' ,'      d88'                                  '888b     '88s8"'      .d888'
+ `88b.    `-..-'      d88'                                     '888b.             .dd888'
+   788b.            ,888'                                        7888b._        _.d8888P
+    `7888oo..__..oo888'                                           `"8888888888888888"'
+      `"7888888888P"'                                               `"788 mGk 8P"'
+        </pre>
+
         <div class="category-tabs">
             <button class="tab-btn active" id="btn-vse">Vše</button>
             <button class="tab-btn" id="btn-panaky">🥃 Panáky</button>
@@ -118,13 +166,13 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js)";
+        import { getDatabase, ref, push, onValue, remove, set } from "[https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js)";
 
         const firebaseConfig = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
-            databaseURL: "https://chasapp-6767-default-rtdb.europe-west1.firebasedatabase.app",
+            databaseURL: "[https://chasapp-6767-default-rtdb.europe-west1.firebasedatabase.app](https://chasapp-6767-default-rtdb.europe-west1.firebasedatabase.app)",
             projectId: "chasapp-6767",
             storageBucket: "chasapp-6767.firebasestorage.app",
             messagingSenderId: "43938163594",
@@ -135,7 +183,6 @@
         const db = getDatabase(app);
         const barRef = ref(db, 'bar_data/historie');
 
-        // --- IDENTITY ---
         let deviceID = localStorage.getItem('bar_device_id') || 'Pokladna-' + Math.random().toString(36).substr(2, 4).toUpperCase();
         localStorage.setItem('bar_device_id', deviceID);
         const updateIDDisplay = () => document.getElementById('device-display').innerText = `Místo: ${deviceID}`;
@@ -147,14 +194,14 @@
         };
 
         const sortiment = [
-            { id: 1, nazev: "Slivovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Slivovice" },
-            { id: 2, nazev: "Hruškovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Hruska" },
-            { id: 3, nazev: "Rum", cena: 40, kat: "Panáky", foto: "https://placehold.co/100x80?text=Rum" },
-            { id: 4, nazev: "Pivo 12°", cena: 50, kat: "Pivo", foto: "https://placehold.co/100x80?text=Pivo+12" },
-            { id: 5, nazev: "Pivo 10°", cena: 40, kat: "Pivo", foto: "https://placehold.co/100x80?text=Pivo+10" },
-            { id: 6, nazev: "Nealko Pivo", cena: 35, kat: "Pivo", foto: "https://placehold.co/100x80?text=Nealko" },
-            { id: 7, nazev: "Vstupné Dospělí", cena: 200, kat: "Vstup", foto: "https://placehold.co/100x80?text=Vstup+D" },
-            { id: 8, nazev: "Vstupné Student", cena: 100, kat: "Vstup", foto: "https://placehold.co/100x80?text=Vstup+S" }
+            { id: 1, nazev: "Slivovice", cena: 50, kat: "Panáky", foto: "[https://placehold.co/100x80?text=Slivovice](https://placehold.co/100x80?text=Slivovice)" },
+            { id: 2, nazev: "Hruškovice", cena: 50, kat: "Panáky", foto: "[https://placehold.co/100x80?text=Hruska](https://placehold.co/100x80?text=Hruska)" },
+            { id: 3, nazev: "Rum", cena: 40, kat: "Panáky", foto: "[https://placehold.co/100x80?text=Rum](https://placehold.co/100x80?text=Rum)" },
+            { id: 4, nazev: "Pivo 12°", cena: 50, kat: "Pivo", foto: "[https://placehold.co/100x80?text=Pivo+12](https://placehold.co/100x80?text=Pivo+12)" },
+            { id: 5, nazev: "Pivo 10°", cena: 40, kat: "Pivo", foto: "[https://placehold.co/100x80?text=Pivo+10](https://placehold.co/100x80?text=Pivo+10)" },
+            { id: 6, nazev: "Nealko Pivo", cena: 35, kat: "Pivo", foto: "[https://placehold.co/100x80?text=Nealko](https://placehold.co/100x80?text=Nealko)" },
+            { id: 7, nazev: "Vstupné Dospělí", cena: 200, kat: "Vstup", foto: "[https://placehold.co/100x80?text=Vstup+D](https://placehold.co/100x80?text=Vstup+D)" },
+            { id: 8, nazev: "Vstupné Student", cena: 100, kat: "Vstup", foto: "[https://placehold.co/100x80?text=Vstup+S](https://placehold.co/100x80?text=Vstup+S)" }
         ];
 
         let kosikItems = {}; 
