@@ -15,7 +15,11 @@
             --accent-red: #e74c3c;
             --shadow-card: 0 4px 15px rgba(0,0,0,0.05);
         }
-        * { box-sizing: border-box; }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-cream);
@@ -25,49 +29,267 @@
             display: flex;
             overflow: hidden;
         }
-        .menu-section { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
-        .category-tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+
+        /* --- Hlavní sekce menu --- */
+        .menu-section {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
         .tab-btn {
-            padding: 12px 20px; border: none; border-radius: 12px; background: white;
-            cursor: pointer; font-weight: 600; font-family: inherit; box-shadow: var(--shadow-card); transition: 0.2s;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            box-shadow: var(--shadow-card);
+            transition: 0.2s;
         }
-        .tab-btn.active { background: var(--accent-gold); color: white; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding-bottom: 50px; }
+
+        .tab-btn.active {
+            background: var(--accent-gold);
+            color: white;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            padding-bottom: 50px;
+        }
+
+        /* --- Karty produktů --- */
         .tile {
-            background: white; border-radius: 16px; padding: 15px; text-align: center; box-shadow: var(--shadow-card);
-            cursor: pointer; transition: all 0.2s ease; border: 2px solid transparent; display: flex; flex-direction: column;
-            justify-content: space-between; height: 200px;
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 200px;
         }
-        .tile:hover { transform: translateY(-5px); border-color: var(--accent-gold); }
-        .tile img { width: 100%; height: 80px; object-fit: contain; margin-bottom: 10px; border-radius: 8px; }
-        .tile h3 { font-size: 1rem; margin: 5px 0; }
-        .tile .price { font-weight: 700; color: var(--accent-gold); font-size: 1.1rem; }
-        .sidebar { width: 380px; background: var(--bg-sidebar); border-left: 1px solid #e0e0e0; display: flex; flex-direction: column; padding: 25px; z-index: 10; }
-        .sidebar-header { margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .order-list { flex: 1; overflow-y: auto; margin-bottom: 20px; }
-        .order-item { display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; margin-bottom: 8px; padding: 10px 15px; border-radius: 8px; }
-        .count-badge { background: var(--accent-gold); color: white; font-weight: bold; padding: 2px 8px; border-radius: 6px; margin-right: 10px; }
-        .delete-btn { background: none; border: none; color: #ccc; font-size: 1.2rem; cursor: pointer; }
-        .delete-btn:hover { color: var(--accent-red); }
-        .total-section { background: #f0f0f0; padding: 20px; border-radius: 15px; text-align: center; }
-        .total-price { font-size: 2.2rem; font-weight: 800; margin: 5px 0 15px; }
-        .btn-group { display: flex; gap: 10px; }
-        .btn { padding: 15px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; flex: 1; }
-        .btn-pay { background: var(--accent-green); color: white; }
-        .btn-reset { background: var(--accent-red); color: white; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 95%; max-width: 580px; height: 85%; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .stat-box { padding: 10px; border-radius: 10px; text-align: center; font-size: 0.8rem; border: 1px solid #eee; }
-        .stat-box strong { display: block; font-size: 1rem; margin-top: 3px; }
-        .history-list { flex: 1; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; }
-        .history-item { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; position: relative; }
-        .device-tag { font-size: 0.7rem; color: white; background: var(--accent-gold); padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
-        .btn-inline-delete { float: right; color: var(--accent-red); border: 1px solid var(--accent-red); background: none; padding: 2px 8px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; }
-        #device-display { cursor: pointer; text-decoration: underline dotted; }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+        .tile img {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .tile h3 {
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+
+        .tile .price {
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+        }
+
+        /* --- Postranní panel (Košík) --- */
+        .sidebar {
+            width: 380px;
+            background: var(--bg-sidebar);
+            border-left: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .count-badge {
+            background: var(--accent-gold);
+            color: white;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-right: 10px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            color: var(--accent-red);
+        }
+
+        .total-section {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .total-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 5px 0 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-pay {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .btn-reset {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        /* --- Modální okno --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 95%;
+            max-width: 580px;
+            height: 85%;
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+            border: 1px solid #eee;
+        }
+
+        .stat-box strong {
+            display: block;
+            font-size: 1rem;
+            margin-top: 3px;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .history-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .device-tag {
+            font-size: 0.7rem;
+            color: white;
+            background: var(--accent-gold);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        #device-display {
+            cursor: pointer;
+            text-decoration: underline dotted;
+        }
+
+        /* --- Responzivita --- */
         @media (max-width: 850px) {
-            body { flex-direction: column; overflow: auto; }
-            .sidebar { width: 100%; height: auto; position: sticky; bottom: 0; }
+            body {
+                flex-direction: column;
+                overflow: auto;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: sticky;
+                bottom: 0;
+            }
         }
     </style>
 </head>
@@ -122,6 +344,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+        // --- Firebase Konfigurace ---
         const firebaseConfig = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -136,16 +359,23 @@
         const db = getDatabase(app);
         const barRef = ref(db, 'bar_data/historie');
 
+        // --- Správa ID zařízení ---
         let deviceID = localStorage.getItem('bar_device_id') || 'Pokladna-' + Math.random().toString(36).substr(2, 4).toUpperCase();
         localStorage.setItem('bar_device_id', deviceID);
+        
         const updateIDDisplay = () => document.getElementById('device-display').innerText = `Místo: ${deviceID}`;
         updateIDDisplay();
 
         document.getElementById('device-display').onclick = () => {
-            const n = prompt("napiš podle toho kde jsi. (bar, výčep, vstup, šatna):", deviceID);
-            if(n) { deviceID = n; localStorage.setItem('bar_device_id', n); updateIDDisplay(); }
+            const n = prompt("Napiš místo, kde jsi (bar, výčep, vstup, šatna):", deviceID);
+            if(n) { 
+                deviceID = n; 
+                localStorage.setItem('bar_device_id', n); 
+                updateIDDisplay(); 
+            }
         };
 
+        // --- Definice sortimentu ---
         const sortiment = [
             { id: 1, nazev: "Slivovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Slivovice" },
             { id: 2, nazev: "Hruškovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Hruska" },
@@ -161,22 +391,35 @@
         let celkovaCena = 0;
         let historieDat = [];
 
+        // --- Načítání dat z Firebase ---
         onValue(barRef, (snap) => {
             const data = snap.val();
             historieDat = data ? Object.entries(data).map(([id, val]) => ({...val, fbId: id})) : [];
-            if (document.getElementById('historyModal').style.display === 'flex') vykresliHistorii();
+            if (document.getElementById('historyModal').style.display === 'flex') {
+                vykresliHistorii();
+            }
         });
 
+        // --- Logika košíku ---
         window.pridatDoKosiku = (nazev, cena) => {
-            if (kosikItems[nazev]) { kosikItems[nazev].pocet++; kosikItems[nazev].suma += cena; }
-            else { kosikItems[nazev] = { pocet: 1, cenaZaKus: cena, suma: cena }; }
-            celkovaCena += cena; aktualizujZobrazeni();
+            if (kosikItems[nazev]) { 
+                kosikItems[nazev].pocet++; 
+                kosikItems[nazev].suma += cena; 
+            } else { 
+                kosikItems[nazev] = { pocet: 1, cenaZaKus: cena, suma: cena }; 
+            }
+            celkovaCena += cena; 
+            aktualizujZobrazeni();
         };
 
         window.odebratPolozku = (nazev) => {
             celkovaCena -= kosikItems[nazev].cenaZaKus;
-            if (kosikItems[nazev].pocet > 1) { kosikItems[nazev].pocet--; kosikItems[nazev].suma -= kosikItems[nazev].cenaZaKus; }
-            else { delete kosikItems[nazev]; }
+            if (kosikItems[nazev].pocet > 1) { 
+                kosikItems[nazev].pocet--; 
+                kosikItems[nazev].suma -= kosikItems[nazev].cenaZaKus; 
+            } else { 
+                delete kosikItems[nazev]; 
+            }
             aktualizujZobrazeni();
         };
 
@@ -184,25 +427,38 @@
             document.getElementById('total-price').innerText = celkovaCena + " Kč";
             const list = document.getElementById('order-list');
             list.innerHTML = Object.keys(kosikItems).length === 0 ? '<div style="text-align:center; color:#aaa; margin-top: 20px;">Prázdno</div>' : '';
+            
             for (const [nazev, data] of Object.entries(kosikItems)) {
-                list.innerHTML += `<div class="order-item"><div><span class="count-badge">${data.pocet}x</span>${nazev}</div><div><strong>${data.suma} Kč</strong> <button class="delete-btn" onclick="odebratPolozku('${nazev}')">&times;</button></div></div>`;
+                list.innerHTML += `
+                    <div class="order-item">
+                        <div><span class="count-badge">${data.pocet}x</span>${nazev}</div>
+                        <div><strong>${data.suma} Kč</strong> <button class="delete-btn" onclick="odebratPolozku('${nazev}')">&times;</button></div>
+                    </div>`;
             }
         }
 
+        // --- Vykreslování menu ---
         window.vykresliMenu = (kat = 'vše') => {
-            const menuDiv = document.getElementById('menu'); menuDiv.innerHTML = '';
+            const menuDiv = document.getElementById('menu'); 
+            menuDiv.innerHTML = '';
             const f = kat === 'vše' ? sortiment : sortiment.filter(p => p.kat === kat);
+            
             f.forEach(p => {
-                menuDiv.innerHTML += `<div class="tile" onclick="window.pridatDoKosiku('${p.nazev}', ${p.cena})"><img src="${p.foto}"><div><h3>${p.nazev}</h3><div class="price">${p.cena} Kč</div></div></div>`;
+                menuDiv.innerHTML += `
+                    <div class="tile" onclick="window.pridatDoKosiku('${p.nazev}', ${p.cena})">
+                        <img src="${p.foto}">
+                        <div>
+                            <h3>${p.nazev}</h3>
+                            <div class="price">${p.cena} Kč</div>
+                        </div>
+                    </div>`;
             });
         };
 
-        window.smazatZaznam = (id) => {
-            if(confirm("Smazat?")) remove(ref(db, `bar_data/historie/${id}`));
-        };
-
+        // --- Historie a tržba ---
         function vykresliHistorii() {
-            const hList = document.getElementById('historyList'); hList.innerHTML = '';
+            const hList = document.getElementById('historyList'); 
+            hList.innerHTML = '';
             let sumy = { "Panáky": 0, "Pivo": 0, "Vstup": 0 }, total = 0;
             const serazeno = [...historieDat].sort((a, b) => b.timestamp - a.timestamp);
             
@@ -213,8 +469,12 @@
                     if(k) sumy[k] += d.suma;
                 });
                 
-                const deleteBtn = obj.autor === deviceID ? `<button class="btn-inline-delete" onclick="window.smazatZaznam('${obj.fbId}')">Opravit</button>` : '';
-                hList.innerHTML += `<div class="history-item">${deleteBtn}<strong>${obj.cas} - ${obj.cenaCelkem} Kč</strong> <span class="device-tag">${obj.autor || '?'}</span><br><small>${Object.entries(obj.polozky || {}).map(([n, d]) => `${d.pocet}x ${n}`).join(', ')}</small></div>`;
+                hList.innerHTML += `
+                    <div class="history-item">
+                        <strong>${obj.cas} - ${obj.cenaCelkem} Kč</strong> 
+                        <span class="device-tag">${obj.autor || '?'}</span><br>
+                        <small>${Object.entries(obj.polozky || {}).map(([n, d]) => `${d.pocet}x ${n}`).join(', ')}</small>
+                    </div>`;
             });
 
             document.getElementById('sum-panaky').innerText = sumy["Panáky"] + " Kč";
@@ -223,34 +483,68 @@
             document.getElementById('grandTotal').innerText = total + " Kč";
         }
 
+        // --- Akce tlačítek ---
         document.getElementById('btn-zaplatit').onclick = () => {
             if (celkovaCena === 0) return;
-            push(barRef, { cas: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), polozky: {...kosikItems}, cenaCelkem: celkovaCena, timestamp: Date.now(), autor: deviceID });
-            kosikItems = {}; celkovaCena = 0; aktualizujZobrazeni();
+            push(barRef, { 
+                cas: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
+                polozky: {...kosikItems}, 
+                cenaCelkem: celkovaCena, 
+                timestamp: Date.now(), 
+                autor: deviceID 
+            });
+            kosikItems = {}; 
+            celkovaCena = 0; 
+            aktualizujZobrazeni();
         };
 
         document.getElementById('btn-archivovat-vse').onclick = () => {
             if (historieDat.length === 0) return alert("Není co archivovat.");
-            if(confirm("Tímhle smažeš celou třžbu ale mám archiv:D")) {
+            if(confirm("Tímhle smažeš celou tržbu, ale vytvořím archiv. Pokračovat?")) {
                 const archiveID = new Date().toISOString().replace(/\./g, '_');
-                set(ref(db, 'bar_data/archiv/' + archiveID), { data: historieDat, export_cas: new Date().toLocaleString(), total: document.getElementById('grandTotal').innerText }).then(() => {
+                set(ref(db, 'bar_data/archiv/' + archiveID), { 
+                    data: historieDat, 
+                    export_cas: new Date().toLocaleString(), 
+                    total: document.getElementById('grandTotal').innerText 
+                }).then(() => {
                     remove(barRef);
-                    alert("Hotovo.");
+                    alert("Tržba archivována a vyčištěna.");
                 });
             }
         };
 
-        document.getElementById('btn-historie').onclick = () => { document.getElementById('historyModal').style.display = 'flex'; vykresliHistorii(); };
-        document.getElementById('btn-zavrit-historii').onclick = () => document.getElementById('historyModal').style.display = 'none';
-        document.getElementById('btn-reset-kosik').onclick = () => { kosikItems = {}; celkovaCena = 0; aktualizujZobrazeni(); };
+        document.getElementById('btn-historie').onclick = () => { 
+            document.getElementById('historyModal').style.display = 'flex'; 
+            vykresliHistorii(); 
+        };
 
+        document.getElementById('btn-zavrit-historii').onclick = () => {
+            document.getElementById('historyModal').style.display = 'none';
+        };
+
+        document.getElementById('btn-reset-kosik').onclick = () => { 
+            kosikItems = {}; 
+            celkovaCena = 0; 
+            aktualizujZobrazeni(); 
+        };
+
+        // --- Filtry kategorií ---
         ['btn-vse', 'btn-panaky', 'btn-pivo', 'btn-vstup'].forEach(id => {
             document.getElementById(id).onclick = () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.getElementById(id).classList.add('active');
-                window.vykresliMenu(id === 'btn-vse' ? 'vše' : document.getElementById(id).innerText.split(' ')[1]);
+                
+                const kats = {
+                    'btn-vse': 'vše',
+                    'btn-panaky': 'Panáky',
+                    'btn-pivo': 'Pivo',
+                    'btn-vstup': 'Vstup'
+                };
+                window.vykresliMenu(kats[id]);
             };
         });
+
+        // Inicializace menu
         window.vykresliMenu();
     </script>
 </body>
