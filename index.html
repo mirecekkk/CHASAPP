@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHASA VLKOV - ONLINE BAR</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root {
             --bg-cream: #dcc8f4;
@@ -180,28 +183,16 @@
             margin: 5px 0 15px;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
+        .btn-pay {
             padding: 15px;
             border: none;
             border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
-            flex: 1;
-        }
-
-        .btn-pay {
+            width: 100%;
             background: var(--accent-green);
             color: white;
-        }
-
-        .btn-reset {
-            background: var(--accent-red);
-            color: white;
+            font-size: 1.1rem;
         }
 
         /* --- Modální okno --- */
@@ -221,12 +212,18 @@
         .modal-content {
             background: white;
             width: 95%;
-            max-width: 580px;
-            height: 85%;
+            max-width: 600px;
+            height: 90%;
             border-radius: 20px;
             padding: 25px;
             display: flex;
             flex-direction: column;
+        }
+
+        /* Graf kontejner */
+        .chart-wrap {
+            height: 200px;
+            margin-bottom: 20px;
         }
 
         .stats-grid {
@@ -261,7 +258,6 @@
             padding: 12px 0;
             border-bottom: 1px solid #eee;
             font-size: 0.85rem;
-            position: relative;
         }
 
         .device-tag {
@@ -273,69 +269,78 @@
             margin-left: 5px;
         }
 
-        #device-display {
+        .btn-reset {
+            background: #555;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
-            text-decoration: underline dotted;
+            margin-top: 10px;
+            font-weight: 600;
         }
 
         /* --- Responzivita --- */
         @media (max-width: 850px) {
-            body {
-                flex-direction: column;
-                overflow: auto;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: sticky;
-                bottom: 0;
-            }
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; height: auto; position: sticky; bottom: 0; border-left: none; border-top: 2px solid #eee; }
+            .modal-content { height: 95%; }
         }
     </style>
 </head>
 <body>
 
-<div class="menu-section">
-        <h2 id="device-display">Načítám...</h2>
+    <div class="menu-section">
+        <h2 id="device-display" style="cursor: pointer; text-decoration: underline dotted;">Načítám...</h2>
+        
         <div class="category-tabs">
             <button class="tab-btn active" id="btn-vse">Vše</button>
             <button class="tab-btn" id="btn-panaky">🥃 Panáky</button>
             <button class="tab-btn" id="btn-pivo">🍺 Pivo</button>
             <button class="tab-btn" id="btn-vstup">🎟️ Vstup</button>
         </div>
+
         <div class="grid" id="menu"></div>
     </div>
 
     <div class="sidebar">
         <div class="sidebar-header">
             <h3>Pokladna</h3>
-            <button class="tab-btn" style="padding: 5px 10px;" id="btn-historie">Tržba</button>
+            <button class="tab-btn" style="padding: 5px 15px;" id="btn-historie">📊 Tržba</button>
         </div>
+        
         <div id="order-list" class="order-list"></div>
+        
         <div class="total-section">
             <div class="total-price" id="total-price">0 Kč</div>
-            <div class="btn-group">
-                <button class="btn btn-pay" id="btn-zaplatit">ZAPLATIT</button>
-            </div>
+            <button class="btn-pay" id="btn-zaplatit">ZAPLATIT</button>
         </div>
     </div>
 
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Tržba & Archiv</h3>
-                <button id="btn-zavrit-historii" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+                <h3 style="margin:0;">Analytika & Tržba</h3>
+                <button id="btn-zavrit-historii" style="background:none; border:none; font-size:2rem; cursor:pointer;">&times;</button>
             </div>
+
+            <div class="chart-wrap">
+                <canvas id="mojeTrzbyGraf"></canvas>
+            </div>
+
             <div class="stats-grid">
                 <div class="stat-box" style="background:#fff5f5;">Panáky <strong id="sum-panaky">0 Kč</strong></div>
                 <div class="stat-box" style="background:#f5fff5;">Pivo <strong id="sum-pivo">0 Kč</strong></div>
                 <div class="stat-box" style="background:#f5f5ff;">Vstup <strong id="sum-vstup">0 Kč</strong></div>
             </div>
-            <div style="text-align: center; padding: 15px; background: #eee; border-radius: 10px;">
+
+            <div style="text-align: center; padding: 15px; background: #eee; border-radius: 10px; margin-bottom: 10px;">
                 Aktuálně v kase: <strong id="grandTotal" style="font-size: 1.4rem;">0 Kč</strong>
             </div>
+
             <div id="historyList" class="history-list"></div>
-            <button class="btn btn-reset" style="margin-top:10px; background: #555;" id="btn-archivovat-vse">Smazat a archivovat</button>
+
+            <button class="btn-reset" id="btn-archivovat-vse">Smazat a archivovat</button>
         </div>
     </div>
 
@@ -343,7 +348,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- Firebase Konfigurace ---
+        // --- Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -358,23 +363,16 @@
         const db = getDatabase(app);
         const barRef = ref(db, 'bar_data/historie');
 
-        // --- Správa ID zařízení ---
+        // --- Proměnné ---
         let deviceID = localStorage.getItem('bar_device_id') || 'Pokladna-' + Math.random().toString(36).substr(2, 4).toUpperCase();
         localStorage.setItem('bar_device_id', deviceID);
-        
-        const updateIDDisplay = () => document.getElementById('device-display').innerText = `Místo: ${deviceID}`;
-        updateIDDisplay();
+        document.getElementById('device-display').innerText = `Místo: ${deviceID}`;
 
-        document.getElementById('device-display').onclick = () => {
-            const n = prompt("Napiš místo, kde jsi (bar, výčep, vstup, šatna):", deviceID);
-            if(n) { 
-                deviceID = n; 
-                localStorage.setItem('bar_device_id', n); 
-                updateIDDisplay(); 
-            }
-        };
+        let kosikItems = {}; 
+        let celkovaCena = 0;
+        let historieDat = [];
+        let instGrafu = null; // Tady držíme graf
 
-        // --- Definice sortimentu ---
         const sortiment = [
             { id: 1, nazev: "Slivovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Slivovice" },
             { id: 2, nazev: "Hruškovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Hruska" },
@@ -386,11 +384,37 @@
             { id: 8, nazev: "Vstupné Student", cena: 100, kat: "Vstup", foto: "https://placehold.co/100x80?text=Vstup+S" }
         ];
 
-        let kosikItems = {}; 
-        let celkovaCena = 0;
-        let historieDat = [];
+        // --- Funkce Grafu ---
+        function kresliGraf(dataSumy) {
+            const ctx = document.getElementById('mojeTrzbyGraf').getContext('2d');
+            
+            // Pokud graf existuje, musíme ho zničit a vytvořit nový (update)
+            if (instGrafu) {
+                instGrafu.destroy();
+            }
 
-        // --- Načítání dat z Firebase ---
+            instGrafu = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Panáky', 'Pivo', 'Vstup'],
+                    datasets: [{
+                        data: [dataSumy.Panáky, dataSumy.Pivo, dataSumy.Vstup],
+                        backgroundColor: ['#e74c3c', '#28a745', '#400356'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // --- Logika Appky ---
         onValue(barRef, (snap) => {
             const data = snap.val();
             historieDat = data ? Object.entries(data).map(([id, val]) => ({...val, fbId: id})) : [];
@@ -399,7 +423,6 @@
             }
         });
 
-        // --- Logika košíku ---
         window.pridatDoKosiku = (nazev, cena) => {
             if (kosikItems[nazev]) { 
                 kosikItems[nazev].pocet++; 
@@ -408,7 +431,7 @@
                 kosikItems[nazev] = { pocet: 1, cenaZaKus: cena, suma: cena }; 
             }
             celkovaCena += cena; 
-            aktualizujZobrazeni();
+            aktualizujKosikUI();
         };
 
         window.odebratPolozku = (nazev) => {
@@ -419,30 +442,29 @@
             } else { 
                 delete kosikItems[nazev]; 
             }
-            aktualizujZobrazeni();
+            aktualizujKosikUI();
         };
 
-        function aktualizujZobrazeni() {
+        function aktualizujKosikUI() {
             document.getElementById('total-price').innerText = celkovaCena + " Kč";
             const list = document.getElementById('order-list');
-            list.innerHTML = Object.keys(kosikItems).length === 0 ? '<div style="text-align:center; color:#aaa; margin-top: 20px;">Prázdno</div>' : '';
+            list.innerHTML = Object.keys(kosikItems).length === 0 ? '<div style="text-align:center; color:#aaa; margin-top:20px;">Košík je prázdný</div>' : '';
             
-            for (const [nazev, data] of Object.entries(kosikItems)) {
+            for (const [nazev, d] of Object.entries(kosikItems)) {
                 list.innerHTML += `
                     <div class="order-item">
-                        <div><span class="count-badge">${data.pocet}x</span>${nazev}</div>
-                        <div><strong>${data.suma} Kč</strong> <button class="delete-btn" onclick="odebratPolozku('${nazev}')">&times;</button></div>
+                        <div><span class="count-badge">${d.pocet}x</span>${nazev}</div>
+                        <div><strong>${d.suma} Kč</strong> <button class="delete-btn" onclick="odebratPolozku('${nazev}')">&times;</button></div>
                     </div>`;
             }
         }
 
-        // --- Vykreslování menu ---
         window.vykresliMenu = (kat = 'vše') => {
             const menuDiv = document.getElementById('menu'); 
             menuDiv.innerHTML = '';
-            const f = kat === 'vše' ? sortiment : sortiment.filter(p => p.kat === kat);
+            const filtr = kat === 'vše' ? sortiment : sortiment.filter(p => p.kat === kat);
             
-            f.forEach(p => {
+            filtr.forEach(p => {
                 menuDiv.innerHTML += `
                     <div class="tile" onclick="window.pridatDoKosiku('${p.nazev}', ${p.cena})">
                         <img src="${p.foto}">
@@ -454,11 +476,11 @@
             });
         };
 
-        // --- Historie a tržba ---
         function vykresliHistorii() {
             const hList = document.getElementById('historyList'); 
             hList.innerHTML = '';
             let sumy = { "Panáky": 0, "Pivo": 0, "Vstup": 0 }, total = 0;
+            
             const serazeno = [...historieDat].sort((a, b) => b.timestamp - a.timestamp);
             
             serazeno.forEach(obj => {
@@ -480,9 +502,12 @@
             document.getElementById('sum-pivo').innerText = sumy["Pivo"] + " Kč";
             document.getElementById('sum-vstup').innerText = sumy["Vstup"] + " Kč";
             document.getElementById('grandTotal').innerText = total + " Kč";
+
+            // Update grafu
+            kresliGraf(sumy);
         }
 
-        // --- Akce tlačítek ---
+        // --- Eventy ---
         document.getElementById('btn-zaplatit').onclick = () => {
             if (celkovaCena === 0) return;
             push(barRef, { 
@@ -494,7 +519,7 @@
             });
             kosikItems = {}; 
             celkovaCena = 0; 
-            aktualizujZobrazeni();
+            aktualizujKosikUI();
         };
 
         document.getElementById('btn-archivovat-vse').onclick = () => {
@@ -512,6 +537,11 @@
             }
         };
 
+        document.getElementById('device-display').onclick = () => {
+            const n = prompt("Napiš místo, kde jsi (bar, výčep, vstup, šatna):", deviceID);
+            if(n) { deviceID = n; localStorage.setItem('bar_device_id', n); document.getElementById('device-display').innerText = `Místo: ${deviceID}`; }
+        };
+
         document.getElementById('btn-historie').onclick = () => { 
             document.getElementById('historyModal').style.display = 'flex'; 
             vykresliHistorii(); 
@@ -521,23 +551,17 @@
             document.getElementById('historyModal').style.display = 'none';
         };
 
-        // --- Filtry kategorií ---
-        ['btn-vse', 'btn-panaky', 'btn-pivo', 'btn-vstup'].forEach(id => {
+        // Filtry
+        const katsMap = { 'btn-vse': 'vše', 'btn-panaky': 'Panáky', 'btn-pivo': 'Pivo', 'btn-vstup': 'Vstup' };
+        Object.keys(katsMap).forEach(id => {
             document.getElementById(id).onclick = () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.getElementById(id).classList.add('active');
-                
-                const kats = {
-                    'btn-vse': 'vše',
-                    'btn-panaky': 'Panáky',
-                    'btn-pivo': 'Pivo',
-                    'btn-vstup': 'Vstup'
-                };
-                window.vykresliMenu(kats[id]);
+                window.vykresliMenu(katsMap[id]);
             };
         });
 
-        // Inicializace menu
+        // Start
         window.vykresliMenu();
     </script>
 </body>
