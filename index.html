@@ -157,41 +157,41 @@
         import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // =====================================================================
-        // ⚙️ HLAVNÍ NASTAVENÍ APLIKACE (MĚŇTE POUZE V TÉTO SEKCI) ⚙️
+        //   HLAVNÍ NASTAVENÍ APLIKACE (PŘEPISOVAT JENOM TOTO!) 
         // =====================================================================
 
         // 1. TEXTY A UPOZORNĚNÍ (Prompt, Alert, Confirm okna)
         const TEXTY = {
-            vyzvaMisto: "Kde zrovna jsi? (např. Bar, Výčep, Vstup)",
-            chybaPrazdnaKasa: "Kasa je prázdná, není co archivovat.",
-            dotazArchivace: "Opravdu smazat aktuální kasu a uložit tržbu do archivu?",
-            uspechArchivace: "Hotovo! Tržba byla uložena do archivu a kasa je vynulovaná."
+            vyzvaMisto: "Napiš kde jsi.(Bar, Výčep, Vstup, Šatna)",
+            chybaPrazdnaKasa: "Kámo tady nic není ale.",
+            dotazArchivace: "Fakt to chceš smazat? Mám archiv a vím kdo to maže:D",
+            uspechArchivace: "Vymazáno. (Pořád mám archiv:D)"
         };
 
         // 2. KATEGORIE PRODUKTŮ
-        // id = název, který propojíte se sortimentem níže (nesmí mít mezery na konci/začátku)
+        // id = název, který se propojí se sortimentem níž (nesmí mít mezery na konci/začátku)
         // btnText = co bude na tlačítku v horním menu
         // color = barva dané kategorie pro statistiky a grafy
         const KATEGORIE = [
-            { id: "Panáky", btnText: "🥃 Panáky", color: "#e74c3c" },
-            { id: "Pivo",   btnText: "🍺 Pivo",   color: "#2ecc71" },
+            { id: "Bar", btnText: "🥃 Bar", color: "#e74c3c" },
+            { id: "Výčep",   btnText: "🍺 Výčep",   color: "#2ecc71" },
             { id: "Vstup",  btnText: "🎟️ Vstup",  color: "#3498db" }
-            // Můžete přidat např.: { id: "Vino", btnText: "🍷 Víno", color: "#8e44ad" }
+            // přidávat stylem: { id: "Vino", btnText: "🍷 Víno", color: "#8e44ad" }
         ];
 
         // 3. SEZNAM PRODUKTŮ (SORTIMENT)
         // n = Název, c = Běžná cena, s = O kolik zlevní v Happy Hour, k = Kategorie (dle 'id' z bodu 2), i = Ikonka (emoji)
         const SORTIMENT = [
-            { n: "Slivovice", c: 50, s: 10, k: "Panáky", i: "🥃" },
-            { n: "Hruškovice", c: 50, s: 10, k: "Panáky", i: "🥃" },
-            { n: "Rum", c: 40, s: 5, k: "Panáky", i: "🥃" },
-            { n: "Pivo 12°", c: 50, s: 10, k: "Pivo", i: "🍺" },
-            { n: "Pivo 10°", c: 40, s: 5, k: "Pivo", i: "🍺" },
+            { n: "Slivovice", c: 50, s: 10, k: "Bar", i: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s" },
+            { n: "Hruškovice", c: 50, s: 10, k: "Bar", i: "🥃" },
+            { n: "Rum", c: 40, s: 5, k: "Bar", i: "🥃" },
+            { n: "Pivo 12°", c: 50, s: 10, k: "Výčep", i: "🍺" },
+            { n: "Pivo 10°", c: 40, s: 5, k: "Výčep", i: "🍺" },
             { n: "Vstupné Dospělí", c: 200, s: 0, k: "Vstup", i: "🎟️" },
             { n: "Vstupné Student", c: 100, s: 0, k: "Vstup", i: "🎟️" }
         ];
 
-        // 4. FIREBASE KONFIGURACE (Zde nesahat, pokud neměníte projekt)
+        // 4. FIREBASE KONFIGURACE (NEHRABAT!)
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -203,7 +203,7 @@
         };
 
         // =====================================================================
-        // 🛑 KONEC NASTAVENÍ - KÓD NÍŽE UŽ OPRAVUJE APLIKACI SÁM 🛑
+        // KONEC! DÁL JE TO AUTOMATICKY!
         // =====================================================================
 
         const app = initializeApp(FIREBASE_CONFIG);
