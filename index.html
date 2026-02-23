@@ -3,92 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHASA VLKOV - PROFESIONÁLNÍ BAROVÝ SYSTÉM</title>
+    <title>CHASA VLKOV - POS SYSTÉM (FIX)</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- 1. DESIGN SYSTÉM A BARVY --- */
-        :root {
-            --bg-body: #f0e6ff;
-            --bg-card: #ffffff;
-            --text-main: #2c2c2c;
-            --accent-primary: #400356;   /* Královská fialová */
-            --accent-happy: #ff9800;     /* Happy Hour Oranžová */
-            --accent-success: #2ecc71;
-            --accent-danger: #e74c3c;
-            --accent-info: #3498db;
-            --shadow: 0 8px 30px rgba(0,0,0,0.1);
-            --radius: 18px;
-        }
-
-        body.happy-mode {
-            --bg-body: #fff4e6;
-            --accent-primary: #e65100;
-        }
-
+        /* --- STYLY ZŮSTÁVAJÍ STEJNÉ --- */
+        :root { --bg-body: #f0e6ff; --bg-card: #ffffff; --text-main: #2c2c2c; --accent-primary: #400356; --accent-happy: #ff9800; --accent-success: #2ecc71; --accent-danger: #e74c3c; --accent-info: #3498db; --shadow: 0 8px 30px rgba(0,0,0,0.1); --radius: 18px; }
+        body.happy-mode { --bg-body: #fff4e6; --accent-primary: #e65100; }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { margin: 0; height: 100vh; display: flex; background: var(--bg-body); transition: all 0.5s ease; overflow: hidden; }
-
-        /* --- 2. LAYOUT --- */
         .main-view { flex: 1; display: flex; flex-direction: column; padding: 25px; overflow-y: auto; }
         .sidebar { width: 420px; background: var(--bg-card); border-left: 1px solid #eee; display: flex; flex-direction: column; padding: 25px; box-shadow: -5px 0 20px rgba(0,0,0,0.02); }
-
-        /* --- 3. TOP BAR --- */
-        .top-bar {
-            background: var(--bg-card); padding: 15px 25px; border-radius: var(--radius);
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: var(--shadow); margin-bottom: 25px;
-        }
+        .top-bar { background: var(--bg-card); padding: 15px 25px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); margin-bottom: 25px; }
         .device-tag { cursor: pointer; font-weight: 700; color: var(--accent-primary); border-bottom: 2px solid; padding-bottom: 2px; }
-
         .category-nav { display: flex; gap: 10px; }
-        .btn-nav { 
-            border: none; padding: 10px 18px; border-radius: 12px; background: #f3f3f3; 
-            cursor: pointer; font-weight: 600; transition: 0.3s;
-        }
+        .btn-nav { border: none; padding: 10px 18px; border-radius: 12px; background: #f3f3f3; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .btn-nav.active { background: var(--accent-primary); color: white; }
-
-        /* Happy Hour Timer UI */
         .happy-box { display: flex; align-items: center; gap: 15px; border-left: 2px solid #eee; padding-left: 20px; }
         #timer-text { font-family: monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent-happy); display: none; }
         body.happy-mode #timer-text { display: block; }
         .btn-happy { background: var(--accent-happy); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
-
-        /* --- 4. PRODUKTOVÝ GRID --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
-        .product-card {
-            background: var(--bg-card); border-radius: var(--radius); padding: 20px; text-align: center;
-            box-shadow: var(--shadow); cursor: pointer; transition: 0.3s; border: 2px solid transparent;
-            display: flex; flex-direction: column; height: 230px;
-        }
+        .product-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: var(--shadow); cursor: pointer; transition: 0.3s; border: 2px solid transparent; display: flex; flex-direction: column; height: 230px; }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
         .product-icon { font-size: 2.8rem; margin-bottom: 10px; }
         .product-name { font-weight: 600; margin: 10px 0; font-size: 1rem; flex-grow: 1; }
         .product-price { font-weight: 700; font-size: 1.3rem; color: var(--accent-primary); }
         .old-price { text-decoration: line-through; font-size: 0.9rem; color: #999; margin-right: 5px; }
-
-        /* --- 5. KOŠÍK --- */
         .cart-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .cart-list { flex: 1; overflow-y: auto; }
-        .cart-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: #f8f9fa; padding: 12px; border-radius: 12px; margin-bottom: 8px;
-        }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 12px; margin-bottom: 8px; }
         .cart-total-box { background: #f3f3f3; padding: 25px; border-radius: 20px; text-align: center; margin-top: 20px; }
         .btn-pay { width: 100%; padding: 18px; border: none; border-radius: 15px; background: var(--accent-success); color: white; font-weight: 700; font-size: 1.2rem; cursor: pointer; }
-
-        /* --- 6. STATISTIKY (MODAL) --- */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .modal-content { 
-            background: white; width: 95%; max-width: 900px; height: 95vh; border-radius: 30px; 
-            padding: 40px; overflow-y: auto; position: relative;
-        }
+        .modal-content { background: white; width: 95%; max-width: 900px; height: 95vh; border-radius: 30px; padding: 40px; overflow-y: auto; position: relative; }
         .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
         .chart-container { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; height: 250px; }
-
-        /* Cihličky statistik */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-brick { padding: 20px; border-radius: 15px; text-align: center; background: #f9f9f9; border: 1px solid #eee; }
         .stat-brick.main { background: var(--accent-primary); color: white; }
@@ -96,16 +48,10 @@
         .stat-brick strong { display: block; font-size: 1.4rem; color: var(--accent-primary); margin: 5px 0; }
         .stat-brick small { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; opacity: 0.8; }
         .stat-detail { font-size: 0.8rem; color: #666; font-weight: 500; }
-
-        @media (max-width: 1000px) {
-            body { flex-direction: column; overflow: auto; }
-            .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid #eee; }
-            .charts-row { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1000px) { body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid #eee; } .charts-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-
     <main class="main-view">
         <header class="top-bar">
             <div class="category-nav">
@@ -115,15 +61,12 @@
                 <button class="btn-nav" onclick="setFilter('Pivo', this)">🍺 Pivo</button>
                 <button class="btn-nav" onclick="setFilter('Vstup', this)">🎟️ Vstup</button>
             </div>
-
             <div class="happy-box">
                 <div id="timer-text">02:30:00</div>
                 <button class="btn-happy" onclick="triggerHappy()">⚡ HAPPY HOUR</button>
             </div>
         </header>
-
-        <div class="product-grid" id="product-grid">
-            </div>
+        <div class="product-grid" id="product-grid"></div>
     </main>
 
     <aside class="sidebar">
@@ -131,10 +74,7 @@
             <h2 style="margin:0;">Košík</h2>
             <button class="btn-nav" style="background:#444; color:white;" onclick="showStats()">📊 Analytika</button>
         </div>
-
-        <div class="cart-list" id="cart-list">
-            </div>
-
+        <div class="cart-list" id="cart-list"></div>
         <div class="cart-total-box">
             <div id="cart-total" style="font-size: 2.8rem; font-weight: 800; margin-bottom: 15px;">0 Kč</div>
             <button class="btn-pay" onclick="finishOrder()">ZAPLATIT</button>
@@ -144,53 +84,21 @@
     <div class="modal" id="stats-modal">
         <div class="modal-content">
             <button onclick="hideStats()" style="position:absolute; top:20px; right:30px; background:none; border:none; font-size:2.5rem; cursor:pointer;">&times;</button>
-            
             <h1 style="margin-top:0;">Barový Dashboard</h1>
-
             <div class="stats-grid">
-                <div class="stat-brick main">
-                    <small>Celková tržba</small>
-                    <strong id="st-total-kc">0 Kč</strong>
-                </div>
-                <div class="stat-brick">
-                    <small>Počet objednávek</small>
-                    <strong id="st-orders-count">0</strong>
-                </div>
-                <div class="stat-brick">
-                    <small>Průměrná objednávka</small>
-                    <strong id="st-avg-order">0 Kč</strong>
-                </div>
+                <div class="stat-brick main"><small>Celková tržba</small><strong id="st-total-kc">0 Kč</strong></div>
+                <div class="stat-brick"><small>Počet objednávek</small><strong id="st-orders-count">0</strong></div>
+                <div class="stat-brick"><small>Průměrná objednávka</small><strong id="st-avg-order">0 Kč</strong></div>
             </div>
-
             <div class="charts-row">
-                <div class="chart-container">
-                    <h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">PODÍL TRŽEB (%)</h3>
-                    <canvas id="chart-pie"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">TRŽBA DLE SKUPIN (Kč)</h3>
-                    <canvas id="chart-bar"></canvas>
-                </div>
+                <div class="chart-container"><h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">PODÍL TRŽEB (%)</h3><canvas id="chart-pie"></canvas></div>
+                <div class="chart-container"><h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">TRŽBA DLE SKUPIN (Kč)</h3><canvas id="chart-bar"></canvas></div>
             </div>
-
             <div class="stats-grid">
-                <div class="stat-brick" style="border-top: 4px solid var(--accent-danger);">
-                    <small>🥃 PANÁKY</small>
-                    <strong id="st-kc-panaky">0 Kč</strong>
-                    <div class="stat-detail" id="st-det-panaky">0 ks | ø 0 Kč</div>
-                </div>
-                <div class="stat-brick" style="border-top: 4px solid var(--accent-success);">
-                    <small>🍺 PIVO</small>
-                    <strong id="st-kc-pivo">0 Kč</strong>
-                    <div class="stat-detail" id="st-det-pivo">0 ks | ø 0 Kč</div>
-                </div>
-                <div class="stat-brick" style="border-top: 4px solid var(--accent-info);">
-                    <small>🎟️ VSTUP</small>
-                    <strong id="st-kc-vstup">0 Kč</strong>
-                    <div class="stat-detail" id="st-det-vstup">0 ks | ø 0 Kč</div>
-                </div>
+                <div class="stat-brick" style="border-top: 4px solid var(--accent-danger);"><small>🥃 PANÁKY</small><strong id="st-kc-panaky">0 Kč</strong><div class="stat-detail" id="st-det-panaky">0 ks | ø 0 Kč</div></div>
+                <div class="stat-brick" style="border-top: 4px solid var(--accent-success);"><small>🍺 PIVO</small><strong id="st-kc-pivo">0 Kč</strong><div class="stat-detail" id="st-det-pivo">0 ks | ø 0 Kč</div></div>
+                <div class="stat-brick" style="border-top: 4px solid var(--accent-info);"><small>🎟️ VSTUP</small><strong id="st-kc-vstup">0 Kč</strong><div class="stat-detail" id="st-det-vstup">0 ks | ø 0 Kč</div></div>
             </div>
-
             <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
                 <h3>Poslední pohyby</h3>
                 <div id="stats-log" style="font-size: 0.85rem;"></div>
@@ -202,7 +110,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- 1. KONFIGURACE A DATA ---
+        // --- KONFIGURACE (Zde vlož své údaje) ---
         const firebaseConfig = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -227,7 +135,6 @@
             { n: "Vstupné Student", c: 100, s: 0, k: "Vstup", i: "🎟️" }
         ];
 
-        // --- 2. STAV APLIKACE ---
         let kosik = {};
         let filtr = 'vše';
         let isHappy = false;
@@ -239,7 +146,7 @@
 
         document.getElementById('loc-display').innerText = `Místo: ${locID}`;
 
-        // --- 3. SYSTÉMOVÉ FUNKCE ---
+        // --- FUNKCE ---
         window.updateLocation = () => {
             const n = prompt("Kde zrovna jsi?", locID);
             if(n) { locID = n; localStorage.setItem('loc_id', n); document.getElementById('loc-display').innerText = `Místo: ${n}`; }
@@ -268,7 +175,6 @@
             renderMenu();
         };
 
-        // --- 4. RENDER PRODEJE ---
         window.renderMenu = () => {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
@@ -278,10 +184,7 @@
                     <div class="product-card" onclick="add('${p.n}', ${pc})">
                         <div class="product-icon">${p.i}</div>
                         <div class="product-name">${p.n}</div>
-                        <div class="product-price">
-                            ${isHappy && p.s > 0 ? `<span class="old-price">${p.c}</span>` : ''}
-                            ${pc} Kč
-                        </div>
+                        <div class="product-price">${isHappy && p.s > 0 ? `<span class="old-price">${p.c}</span>`:''}${pc} Kč</div>
                     </div>`;
             });
         };
@@ -304,11 +207,7 @@
             let t = 0;
             Object.entries(kosik).forEach(([n, d]) => {
                 t += d.s;
-                l.innerHTML += `
-                    <div class="cart-item">
-                        <span><strong>${d.q}x</strong> ${n}</span>
-                        <span>${d.s} Kč <button onclick="remove('${n}')" style="border:none; color:red; cursor:pointer;">&times;</button></span>
-                    </div>`;
+                l.innerHTML += `<div class="cart-item"><span><strong>${d.q}x</strong> ${n}</span><span>${d.s} Kč <button onclick="remove('${n}')" style="border:none; color:red; cursor:pointer;">&times;</button></span></div>`;
             });
             document.getElementById('cart-total').innerText = `${t} Kč`;
         }
@@ -316,18 +215,24 @@
         window.finishOrder = () => {
             const t = parseInt(document.getElementById('cart-total').innerText);
             if(t === 0) return;
+            // ZDE JE KLÍČOVÁ ZMĚNA: Ukládám starý název "cenaCelkem" i nový "celkem", aby to bylo 100% kompatibilní
             push(barRef, {
                 ts: Date.now(),
                 cas: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-                data: {...kosik},
-                celkem: t,
+                data: {...kosik},       // Nový název pro položky
+                polozky: {...kosik},    // Starý název pro jistotu
+                celkem: t,              // Nový název ceny
+                cenaCelkem: t,          // Starý název ceny
                 isHH: isHappy,
                 misto: locID
             }).then(() => { kosik = {}; updateCart(); });
         };
 
-        // --- 5. ANALYTIKA A STATISTIKY ---
-        onValue(barRef, (s) => { historie = s.val() ? Object.values(s.val()) : []; });
+        // --- NAČÍTÁNÍ DAT ---
+        onValue(barRef, (s) => {
+            historie = s.val() ? Object.values(s.val()) : [];
+            console.log("Načteno záznamů:", historie.length); // Pro kontrolu v konzoli
+        });
 
         window.showStats = () => {
             document.getElementById('stats-modal').style.display = 'flex';
@@ -336,6 +241,7 @@
 
         window.hideStats = () => document.getElementById('stats-modal').style.display = 'none';
 
+        // --- OPRAVENÁ FUNKCE PRO VÝPOČET STATISTIK ---
         function runStats() {
             let total = 0, count = historie.length;
             let cats = { "Panáky": {kc:0, ks:0}, "Pivo": {kc:0, ks:0}, "Vstup": {kc:0, ks:0} };
@@ -343,20 +249,33 @@
             log.innerHTML = '';
 
             historie.sort((a,b) => b.ts - a.ts).forEach(o => {
-                total += o.celkem;
-                Object.entries(o.data).forEach(([n, d]) => {
+                // UNIVERZÁLNÍ ČTENÍ: Zkusí najít 'celkem', když není, zkusí 'cenaCelkem', když ani to, tak 0
+                const castka = o.celkem || o.cenaCelkem || 0;
+                // UNIVERZÁLNÍ ČTENÍ: Zkusí najít 'data', když není, zkusí 'polozky', když ani to, tak prázdný objekt
+                const polozkyList = o.data || o.polozky || {};
+
+                total += castka;
+
+                Object.entries(polozkyList).forEach(([n, d]) => {
                     const k = sortiment.find(x => x.n === n)?.k;
-                    if(k) { cats[k].kc += d.s; cats[k].ks += d.q; }
+                    // Ošetření starší struktury dat, kde 'd' může mít jiné vlastnosti
+                    const cenaPolozky = d.s || d.suma || 0;
+                    const pocetPolozky = d.q || d.pocet || 0;
+
+                    if(k) { 
+                        cats[k].kc += cenaPolozky; 
+                        cats[k].ks += pocetPolozky; 
+                    }
                 });
-                log.innerHTML += `<div><b>${o.cas} - ${o.celkem} Kč</b> [${o.misto}] ${o.isHH?'⚡':''} <small>${Object.entries(o.data).map(([n,d])=>`${d.q}x ${n}`).join(', ')}</small></div>`;
+
+                log.innerHTML += `<div><b>${o.cas || '??:??'} - ${castka} Kč</b> [${o.misto || '?'}] ${o.isHH?'⚡':''} <small>${Object.keys(polozkyList).join(', ')}</small></div>`;
             });
 
-            // Hlavní čísla
+            // Výpis do HTML
             document.getElementById('st-total-kc').innerText = total + " Kč";
             document.getElementById('st-orders-count').innerText = count;
             document.getElementById('st-avg-order').innerText = count ? Math.round(total/count) + " Kč" : "0 Kč";
 
-            // Sektory
             ["Panáky", "Pivo", "Vstup"].forEach(k => {
                 const id = k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 document.getElementById(`st-kc-${id}`).innerText = cats[k].kc + " Kč";
@@ -364,7 +283,7 @@
                 document.getElementById(`st-det-${id}`).innerText = `${cats[k].ks} ks | ø ${avg} Kč`;
             });
 
-            // Grafy
+            // Vykreslení grafů
             if(chartPie) chartPie.destroy();
             if(chartBar) chartBar.destroy();
 
@@ -381,7 +300,7 @@
                 type: 'bar',
                 data: {
                     labels: ['Panáky', 'Pivo', 'Vstup'],
-                    datasets: [{ label: 'Tržba v Kč', data: [cats["Panáky"].kc, cats["Pivo"].kc, cats["Vstup"].kc], backgroundColor: ['#e74c3c','#2ecc71','#3498db'] }]
+                    datasets: [{ label: 'Tržba', data: [cats["Panáky"].kc, cats["Pivo"].kc, cats["Vstup"].kc], backgroundColor: ['#e74c3c','#2ecc71','#3498db'] }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
             });
