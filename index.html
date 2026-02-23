@@ -3,208 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHASA VLKOV - ONLINE BAR</title>
+    <title>CHASA VLKOV - POS SYSTÉM PRO</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* --- DESIGN SYSTÉM --- */
         :root {
-            --bg-cream: #dcc8f4;
-            --bg-sidebar: #ffffff;
-            --text-dark: #2c2c2c;
-            --accent-gold: #400356;
-            --accent-green: #28a745;
-            --accent-red: #e74c3c;
-            --shadow-card: 0 4px 15px rgba(0,0,0,0.05);
+            --bg-body: #dcc8f4;
+            --bg-card: #ffffff;
+            --text-main: #2c2c2c;
+            --accent-primary: #400356;   /* Klasická fialová */
+            --accent-happy: #ff9800;     /* Oranžová pro Happy Hour */
+            --accent-success: #28a745;
+            --accent-danger: #e74c3c;
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* --- HAPPY HOUR REŽIM --- */
+        body.happy-mode {
+            --bg-body: #ffe0b2;
+            --accent-primary: #e65100;
         }
 
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-cream);
-            color: var(--text-dark);
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
             height: 100vh;
             display: flex;
+            transition: var(--transition);
             overflow: hidden;
         }
 
-        /* --- Hlavní sekce menu --- */
-        .menu-section {
+        /* --- HLAVNÍ SEKCE --- */
+        .main-content {
             flex: 1;
-            padding: 30px;
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
+            padding: 25px;
+            overflow-y: auto;
         }
 
-        .category-tabs {
+        /* Horní Lišta */
+        .top-bar {
+            background: var(--bg-card);
+            padding: 15px 25px;
+            border-radius: 20px;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
             margin-bottom: 25px;
-            flex-wrap: wrap;
         }
 
-        .tab-btn {
-            padding: 12px 20px;
+        .category-nav {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
             border: none;
             border-radius: 12px;
-            background: white;
-            cursor: pointer;
+            background: #f1f1f1;
             font-weight: 600;
-            font-family: inherit;
-            box-shadow: var(--shadow-card);
-            transition: 0.2s;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .tab-btn.active {
-            background: var(--accent-gold);
+        .nav-btn.active {
+            background: var(--accent-primary);
             color: white;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            padding-bottom: 50px;
+        /* Happy Hour Panel */
+        .happy-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-left: 20px;
+            border-left: 2px solid #eee;
         }
 
-        /* --- Karty produktů --- */
-        .tile {
-            background: white;
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: var(--shadow-card);
+        #timer {
+            font-family: 'monospace';
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-happy);
+            display: none;
+        }
+
+        body.happy-mode #timer {
+            display: block;
+        }
+
+        .happy-trigger {
+            background: var(--accent-happy);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+        }
+
+        /* --- GRID PRODUKTŮ --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
             border: 2px solid transparent;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 200px;
+            height: 220px;
         }
 
-        .tile:hover {
+        .product-card:hover {
             transform: translateY(-5px);
-            border-color: var(--accent-gold);
+            border-color: var(--accent-primary);
         }
 
-        .tile img {
-            width: 100%;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 10px;
-            border-radius: 8px;
-        }
-
-        .tile h3 {
-            font-size: 1rem;
-            margin: 5px 0;
-        }
-
-        .tile .price {
-            font-weight: 700;
-            color: var(--accent-gold);
+        .product-card h3 {
+            margin: 10px 0 5px;
             font-size: 1.1rem;
         }
 
-        /* --- Postranní panel (Košík) --- */
+        .price-tag {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+        }
+
+        .discount-label {
+            color: var(--accent-danger);
+            font-size: 0.8rem;
+            text-decoration: line-through;
+            margin-right: 5px;
+        }
+
+        /* --- KOŠÍK (SIDEBAR) --- */
         .sidebar {
-            width: 380px;
-            background: var(--bg-sidebar);
-            border-left: 1px solid #e0e0e0;
+            width: 400px;
+            background: var(--bg-card);
+            border-left: 1px solid #eee;
             display: flex;
             flex-direction: column;
-            padding: 25px;
-            z-index: 10;
+            padding: 30px;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.03);
         }
 
-        .sidebar-header {
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .order-list {
+        .cart-items {
             flex: 1;
             overflow-y: auto;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
 
-        .order-item {
+        .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 12px 15px;
             background: #f9f9f9;
-            margin-bottom: 8px;
-            padding: 10px 15px;
-            border-radius: 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
         }
 
-        .count-badge {
-            background: var(--accent-gold);
-            color: white;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 6px;
-            margin-right: 10px;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #ccc;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .delete-btn:hover {
-            color: var(--accent-red);
-        }
-
-        .total-section {
-            background: #f0f0f0;
-            padding: 20px;
-            border-radius: 15px;
+        .checkout-box {
+            background: #f1f1f1;
+            padding: 25px;
+            border-radius: 20px;
             text-align: center;
         }
 
         .total-price {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            margin: 5px 0 15px;
+            margin-bottom: 20px;
         }
 
-        .btn-pay {
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
+        .pay-btn {
             width: 100%;
-            background: var(--accent-green);
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            background: var(--accent-success);
             color: white;
-            font-size: 1.1rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        /* --- Modální okno --- */
+        .pay-btn:active { transform: scale(0.98); }
+
+        /* --- MODÁLY --- */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 100;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
             justify-content: center;
             align-items: center;
         }
@@ -212,135 +232,103 @@
         .modal-content {
             background: white;
             width: 95%;
-            max-width: 600px;
-            height: 90%;
-            border-radius: 20px;
-            padding: 25px;
+            max-width: 800px;
+            height: 90vh;
+            border-radius: 30px;
+            padding: 40px;
             display: flex;
             flex-direction: column;
-        }
-
-        /* Graf kontejner */
-        .chart-wrap {
-            height: 200px;
-            margin-bottom: 20px;
+            position: relative;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin: 15px 0;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
         }
 
-        .stat-box {
-            padding: 10px;
-            border-radius: 10px;
+        .stat-card {
+            padding: 20px;
+            border-radius: 15px;
+            background: #f9f9f9;
             text-align: center;
-            font-size: 0.8rem;
-            border: 1px solid #eee;
         }
 
-        .stat-box strong {
-            display: block;
-            font-size: 1rem;
-            margin-top: 3px;
-        }
-
-        .history-list {
-            flex: 1;
-            overflow-y: auto;
-            margin-top: 10px;
-            border-top: 1px solid #eee;
-        }
-
-        .history-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.85rem;
-        }
-
-        .device-tag {
-            font-size: 0.7rem;
-            color: white;
-            background: var(--accent-gold);
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 5px;
-        }
-
-        .btn-reset {
-            background: #555;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        /* --- Responzivita --- */
-        @media (max-width: 850px) {
+        /* --- RESPONZIVITA --- */
+        @media (max-width: 900px) {
             body { flex-direction: column; overflow: auto; }
-            .sidebar { width: 100%; height: auto; position: sticky; bottom: 0; border-left: none; border-top: 2px solid #eee; }
-            .modal-content { height: 95%; }
+            .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid #eee; }
+            .modal-content { height: 95vh; padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="menu-section">
-        <h2 id="device-display" style="cursor: pointer; text-decoration: underline dotted;">Načítám...</h2>
+    <main class="main-content">
         
-        <div class="category-tabs">
-            <button class="tab-btn active" id="btn-vse">Vše</button>
-            <button class="tab-btn" id="btn-panaky">🥃 Panáky</button>
-            <button class="tab-btn" id="btn-pivo">🍺 Pivo</button>
-            <button class="tab-btn" id="btn-vstup">🎟️ Vstup</button>
-        </div>
+        <header class="top-bar">
+            <nav class="category-nav">
+                <button class="nav-btn active" onclick="filterKat('vše', this)">Vše</button>
+                <button class="nav-btn" onclick="filterKat('Panáky', this)">🥃 Panáky</button>
+                <button class="nav-btn" onclick="filterKat('Pivo', this)">🍺 Pivo</button>
+            </nav>
 
-        <div class="grid" id="menu"></div>
-    </div>
+            <div class="happy-panel">
+                <div id="timer">02:30:00</div>
+                <button class="happy-trigger" onclick="toggleHappyHour()">⚡ HAPPY HOUR</button>
+            </div>
+        </header>
 
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h3>Pokladna</h3>
-            <button class="tab-btn" style="padding: 5px 15px;" id="btn-historie">📊 Tržba</button>
-        </div>
-        
-        <div id="order-list" class="order-list"></div>
-        
-        <div class="total-section">
-            <div class="total-price" id="total-price">0 Kč</div>
-            <button class="btn-pay" id="btn-zaplatit">ZAPLATIT</button>
-        </div>
-    </div>
-
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0;">Analytika & Tržba</h3>
-                <button id="btn-zavrit-historii" style="background:none; border:none; font-size:2rem; cursor:pointer;">&times;</button>
+        <div class="product-grid" id="product-grid">
             </div>
 
-            <div class="chart-wrap">
-                <canvas id="mojeTrzbyGraf"></canvas>
+    </main>
+
+    <aside class="sidebar">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="margin:0;">Košík</h2>
+            <button class="nav-btn" onclick="openStats()">📊 Tržba</button>
+        </div>
+
+        <div class="cart-items" id="cart-items">
+            </div>
+
+        <div class="checkout-box">
+            <div class="total-price" id="total-display">0 Kč</div>
+            <button class="pay-btn" onclick="processPayment()">ZAPLATIT</button>
+        </div>
+    </aside>
+
+    <div class="modal" id="stats-modal">
+        <div class="modal-content">
+            <button onclick="closeStats()" style="position:absolute; top:20px; right:20px; border:none; background:none; font-size:2rem; cursor:pointer;">&times;</button>
+            
+            <h2>Analýza Prodeje</h2>
+            
+            <div style="height:250px;">
+                <canvas id="sales-chart"></canvas>
             </div>
 
             <div class="stats-grid">
-                <div class="stat-box" style="background:#fff5f5;">Panáky <strong id="sum-panaky">0 Kč</strong></div>
-                <div class="stat-box" style="background:#f5fff5;">Pivo <strong id="sum-pivo">0 Kč</strong></div>
-                <div class="stat-box" style="background:#f5f5ff;">Vstup <strong id="sum-vstup">0 Kč</strong></div>
+                <div class="stat-card" style="background:#f3e5f5;">
+                    <small>Celková Tržba</small>
+                    <h3 id="stat-total-kc" style="margin:5px 0;">0 Kč</h3>
+                </div>
+                <div class="stat-card" style="background:#fff3e0;">
+                    <small>Happy Hour podíl</small>
+                    <h3 id="stat-happy-kc" style="margin:5px 0;">0 Kč</h3>
+                </div>
+                <div class="stat-card" style="background:#e8f5e9;">
+                    <small>Počet Účtenek</small>
+                    <h3 id="stat-orders-count" style="margin:5px 0;">0</h3>
+                </div>
             </div>
 
-            <div style="text-align: center; padding: 15px; background: #eee; border-radius: 10px; margin-bottom: 10px;">
-                Aktuálně v kase: <strong id="grandTotal" style="font-size: 1.4rem;">0 Kč</strong>
+            <div style="flex:1; overflow-y:auto; border-top:1px solid #eee; padding-top:20px;">
+                <h3>Historie</h3>
+                <div id="history-log"></div>
             </div>
-
-            <div id="historyList" class="history-list"></div>
-
-            <button class="btn-reset" id="btn-archivovat-vse">Smazat a archivovat</button>
         </div>
     </div>
 
@@ -348,7 +336,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- Firebase ---
+        // --- 1. CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -363,206 +351,215 @@
         const db = getDatabase(app);
         const barRef = ref(db, 'bar_data/historie');
 
-        // --- Proměnné ---
-        let deviceID = localStorage.getItem('bar_device_id') || 'Pokladna-' + Math.random().toString(36).substr(2, 4).toUpperCase();
-        localStorage.setItem('bar_device_id', deviceID);
-        document.getElementById('device-display').innerText = `Místo: ${deviceID}`;
-
-        let kosikItems = {}; 
-        let celkovaCena = 0;
-        let historieDat = [];
-        let instGrafu = null; // Tady držíme graf
-
+        // --- 2. PRODUKTY (Zde nastavuješ slevu v Kč) ---
         const sortiment = [
-            { id: 1, nazev: "Slivovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Slivovice" },
-            { id: 2, nazev: "Hruškovice", cena: 50, kat: "Panáky", foto: "https://placehold.co/100x80?text=Hruska" },
-            { id: 3, nazev: "Rum", cena: 40, kat: "Panáky", foto: "https://placehold.co/100x80?text=Rum" },
-            { id: 4, nazev: "Pivo 12°", cena: 50, kat: "Pivo", foto: "https://placehold.co/100x80?text=Pivo+12" },
-            { id: 5, nazev: "Pivo 10°", cena: 40, kat: "Pivo", foto: "https://placehold.co/100x80?text=Pivo+10" },
-            { id: 6, nazev: "Nealko Pivo", cena: 35, kat: "Pivo", foto: "https://placehold.co/100x80?text=Nealko" },
-            { id: 7, nazev: "Vstupné Dospělí", cena: 200, kat: "Vstup", foto: "https://placehold.co/100x80?text=Vstup+D" },
-            { id: 8, nazev: "Vstupné Student", cena: 100, kat: "Vstup", foto: "https://placehold.co/100x80?text=Vstup+S" }
+            { id: 1, nazev: "Slivovice", cena: 50, sleva: 10, kat: "Panáky" },
+            { id: 2, nazev: "Hruškovice", cena: 50, sleva: 10, kat: "Panáky" },
+            { id: 3, nazev: "Tuzemák", cena: 35, sleva: 5, kat: "Panáky" },
+            { id: 4, nazev: "Pivo 12°", cena: 50, sleva: 10, kat: "Pivo" },
+            { id: 5, nazev: "Pivo 10°", cena: 40, sleva: 5, kat: "Pivo" },
+            { id: 6, nazev: "Zelená", cena: 30, sleva: 5, kat: "Panáky" }
         ];
 
-        // --- Funkce Grafu ---
-        function kresliGraf(dataSumy) {
-            const ctx = document.getElementById('mojeTrzbyGraf').getContext('2d');
-            
-            // Pokud graf existuje, musíme ho zničit a vytvořit nový (update)
-            if (instGrafu) {
-                instGrafu.destroy();
-            }
+        // --- 3. STAV APLIKACE ---
+        let cart = {};
+        let currentKat = 'vše';
+        let isHappy = false;
+        let happyEndTime = null;
+        let timerInterval = null;
+        let historyData = [];
+        let chartInstance = null;
 
-            instGrafu = new Chart(ctx, {
+        // --- 4. FUNKCE: HAPPY HOUR & TIMER ---
+        window.toggleHappyHour = () => {
+            if (!isHappy) {
+                isHappy = true;
+                document.body.classList.add('happy-mode');
+                // Nastavit konec za 2.5 hodiny
+                happyEndTime = Date.now() + (2.5 * 60 * 60 * 1000);
+                startTimer();
+            } else {
+                stopHappyHour();
+            }
+            renderProducts();
+        };
+
+        function stopHappyHour() {
+            isHappy = false;
+            document.body.classList.remove('happy-mode');
+            clearInterval(timerInterval);
+            document.getElementById('timer').innerText = "02:30:00";
+            renderProducts();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const now = Date.now();
+                const diff = happyEndTime - now;
+
+                if (diff <= 0) {
+                    stopHappyHour();
+                    return;
+                }
+
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                
+                document.getElementById('timer').innerText = 
+                    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        // --- 5. FUNKCE: RENDER PRODUKTŮ ---
+        window.filterKat = (kat, btn) => {
+            currentKat = kat;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProducts();
+        };
+
+        window.renderProducts = () => {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            const filtered = sortiment.filter(p => currentKat === 'vše' || p.kat === currentKat);
+
+            filtered.forEach(p => {
+                const finalPrice = isHappy ? (p.cena - p.sleva) : p.cena;
+                
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => addToCart(p.nazev, finalPrice);
+                
+                card.innerHTML = `
+                    <div style="font-size: 3rem;">${p.kat === 'Pivo' ? '🍺' : '🥃'}</div>
+                    <h3>${p.nazev}</h3>
+                    <div class="price-tag">
+                        ${isHappy && p.sleva > 0 ? `<span class="discount-label">${p.cena}</span>` : ''}
+                        ${finalPrice} Kč
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        };
+
+        // --- 6. FUNKCE: KOŠÍK ---
+        window.addToCart = (nazev, cena) => {
+            if (cart[nazev]) {
+                cart[nazev].count++;
+                cart[nazev].sum += cena;
+            } else {
+                cart[nazev] = { count: 1, price: cena, sum: cena };
+            }
+            updateCartUI();
+        };
+
+        window.removeFromCart = (nazev) => {
+            cart[nazev].count--;
+            cart[nazev].sum -= cart[nazev].price;
+            if (cart[nazev].count <= 0) delete cart[nazev];
+            updateCartUI();
+        };
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let total = 0;
+
+            Object.entries(cart).forEach(([nazev, data]) => {
+                total += data.sum;
+                const item = document.createElement('div');
+                item.className = 'cart-item';
+                item.innerHTML = `
+                    <span><strong>${data.count}x</strong> ${nazev}</span>
+                    <span>${data.sum} Kč <button onclick="removeFromCart('${nazev}')" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold; margin-left:10px;">&times;</button></span>
+                `;
+                container.appendChild(item);
+            });
+
+            document.getElementById('total-display').innerText = `${total} Kč`;
+        }
+
+        // --- 7. FUNKCE: FIREBASE PROPOJENÍ ---
+        window.processPayment = () => {
+            const total = parseInt(document.getElementById('total-display').innerText);
+            if (total === 0) return;
+
+            push(barRef, {
+                timestamp: Date.now(),
+                cas: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                polozky: {...cart},
+                cenaCelkem: total,
+                isHappy: isHappy
+            }).then(() => {
+                cart = {};
+                updateCartUI();
+            });
+        };
+
+        onValue(barRef, (snap) => {
+            const data = snap.val();
+            historyData = data ? Object.values(data) : [];
+        });
+
+        // --- 8. ANALYTIKA A GRAFY ---
+        window.openStats = () => {
+            document.getElementById('stats-modal').style.display = 'flex';
+            renderStats();
+        };
+
+        window.closeStats = () => {
+            document.getElementById('stats-modal').style.display = 'none';
+        };
+
+        function renderStats() {
+            let totalKc = 0;
+            let happyKc = 0;
+            const log = document.getElementById('history-log');
+            log.innerHTML = '';
+
+            historyData.sort((a,b) => b.timestamp - a.timestamp).forEach(order => {
+                totalKc += order.cenaCelkem;
+                if (order.isHappy) happyKc += order.cenaCelkem;
+
+                const entry = document.createElement('div');
+                entry.style.padding = '10px 0';
+                entry.style.borderBottom = '1px solid #eee';
+                entry.innerHTML = `
+                    <strong>${order.cas} - ${order.cenaCelkem} Kč</strong> ${order.isHappy ? '⚡ HH' : ''}<br>
+                    <small>${Object.entries(order.polozky).map(([n, d]) => `${d.count}x ${n}`).join(', ')}</small>
+                `;
+                log.appendChild(entry);
+            });
+
+            document.getElementById('stat-total-kc').innerText = `${totalKc} Kč`;
+            document.getElementById('stat-happy-kc').innerText = `${happyKc} Kč`;
+            document.getElementById('stat-orders-count').innerText = historyData.length;
+
+            // Chart.js
+            const ctx = document.getElementById('sales-chart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Panáky', 'Pivo', 'Vstup'],
+                    labels: ['Standard', 'Happy Hour ⚡'],
                     datasets: [{
-                        data: [dataSumy.Panáky, dataSumy.Pivo, dataSumy.Vstup],
-                        backgroundColor: ['#e74c3c', '#28a745', '#400356'],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        data: [totalKc - happyKc, happyKc],
+                        backgroundColor: ['#400356', '#ff9800'],
+                        hoverOffset: 10
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
+                    maintainAspectRatio: false
                 }
             });
         }
 
-        // --- Logika Appky ---
-        onValue(barRef, (snap) => {
-            const data = snap.val();
-            historieDat = data ? Object.entries(data).map(([id, val]) => ({...val, fbId: id})) : [];
-            if (document.getElementById('historyModal').style.display === 'flex') {
-                vykresliHistorii();
-            }
-        });
-
-        window.pridatDoKosiku = (nazev, cena) => {
-            if (kosikItems[nazev]) { 
-                kosikItems[nazev].pocet++; 
-                kosikItems[nazev].suma += cena; 
-            } else { 
-                kosikItems[nazev] = { pocet: 1, cenaZaKus: cena, suma: cena }; 
-            }
-            celkovaCena += cena; 
-            aktualizujKosikUI();
-        };
-
-        window.odebratPolozku = (nazev) => {
-            celkovaCena -= kosikItems[nazev].cenaZaKus;
-            if (kosikItems[nazev].pocet > 1) { 
-                kosikItems[nazev].pocet--; 
-                kosikItems[nazev].suma -= kosikItems[nazev].cenaZaKus; 
-            } else { 
-                delete kosikItems[nazev]; 
-            }
-            aktualizujKosikUI();
-        };
-
-        function aktualizujKosikUI() {
-            document.getElementById('total-price').innerText = celkovaCena + " Kč";
-            const list = document.getElementById('order-list');
-            list.innerHTML = Object.keys(kosikItems).length === 0 ? '<div style="text-align:center; color:#aaa; margin-top:20px;">Košík je prázdný</div>' : '';
-            
-            for (const [nazev, d] of Object.entries(kosikItems)) {
-                list.innerHTML += `
-                    <div class="order-item">
-                        <div><span class="count-badge">${d.pocet}x</span>${nazev}</div>
-                        <div><strong>${d.suma} Kč</strong> <button class="delete-btn" onclick="odebratPolozku('${nazev}')">&times;</button></div>
-                    </div>`;
-            }
-        }
-
-        window.vykresliMenu = (kat = 'vše') => {
-            const menuDiv = document.getElementById('menu'); 
-            menuDiv.innerHTML = '';
-            const filtr = kat === 'vše' ? sortiment : sortiment.filter(p => p.kat === kat);
-            
-            filtr.forEach(p => {
-                menuDiv.innerHTML += `
-                    <div class="tile" onclick="window.pridatDoKosiku('${p.nazev}', ${p.cena})">
-                        <img src="${p.foto}">
-                        <div>
-                            <h3>${p.nazev}</h3>
-                            <div class="price">${p.cena} Kč</div>
-                        </div>
-                    </div>`;
-            });
-        };
-
-        function vykresliHistorii() {
-            const hList = document.getElementById('historyList'); 
-            hList.innerHTML = '';
-            let sumy = { "Panáky": 0, "Pivo": 0, "Vstup": 0 }, total = 0;
-            
-            const serazeno = [...historieDat].sort((a, b) => b.timestamp - a.timestamp);
-            
-            serazeno.forEach(obj => {
-                total += obj.cenaCelkem;
-                Object.entries(obj.polozky || {}).forEach(([n, d]) => {
-                    const k = sortiment.find(i => i.nazev === n)?.kat;
-                    if(k) sumy[k] += d.suma;
-                });
-                
-                hList.innerHTML += `
-                    <div class="history-item">
-                        <strong>${obj.cas} - ${obj.cenaCelkem} Kč</strong> 
-                        <span class="device-tag">${obj.autor || '?'}</span><br>
-                        <small>${Object.entries(obj.polozky || {}).map(([n, d]) => `${d.pocet}x ${n}`).join(', ')}</small>
-                    </div>`;
-            });
-
-            document.getElementById('sum-panaky').innerText = sumy["Panáky"] + " Kč";
-            document.getElementById('sum-pivo').innerText = sumy["Pivo"] + " Kč";
-            document.getElementById('sum-vstup').innerText = sumy["Vstup"] + " Kč";
-            document.getElementById('grandTotal').innerText = total + " Kč";
-
-            // Update grafu
-            kresliGraf(sumy);
-        }
-
-        // --- Eventy ---
-        document.getElementById('btn-zaplatit').onclick = () => {
-            if (celkovaCena === 0) return;
-            push(barRef, { 
-                cas: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
-                polozky: {...kosikItems}, 
-                cenaCelkem: celkovaCena, 
-                timestamp: Date.now(), 
-                autor: deviceID 
-            });
-            kosikItems = {}; 
-            celkovaCena = 0; 
-            aktualizujKosikUI();
-        };
-
-        document.getElementById('btn-archivovat-vse').onclick = () => {
-            if (historieDat.length === 0) return alert("a co mam jako archivovat kamo?.");
-            if(confirm("Teď to smažeš ale mám archiv haha:D")) {
-                const archiveID = new Date().toISOString().replace(/\./g, '_');
-                set(ref(db, 'bar_data/archiv/' + archiveID), { 
-                    data: historieDat, 
-                    export_cas: new Date().toLocaleString(), 
-                    total: document.getElementById('grandTotal').innerText 
-                }).then(() => {
-                    remove(barRef);
-                    alert("Hotovo (porad mam archiv haha:D)");
-                });
-            }
-        };
-
-        document.getElementById('device-display').onclick = () => {
-            const n = prompt("Napiš místo, kde jsi (bar, výčep, vstup, šatna):", deviceID);
-            if(n) { deviceID = n; localStorage.setItem('bar_device_id', n); document.getElementById('device-display').innerText = `Místo: ${deviceID}`; }
-        };
-
-        document.getElementById('btn-historie').onclick = () => { 
-            document.getElementById('historyModal').style.display = 'flex'; 
-            vykresliHistorii(); 
-        };
-
-        document.getElementById('btn-zavrit-historii').onclick = () => {
-            document.getElementById('historyModal').style.display = 'none';
-        };
-
-        // Filtry
-        const katsMap = { 'btn-vse': 'vše', 'btn-panaky': 'Panáky', 'btn-pivo': 'Pivo', 'btn-vstup': 'Vstup' };
-        Object.keys(katsMap).forEach(id => {
-            document.getElementById(id).onclick = () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                window.vykresliMenu(katsMap[id]);
-            };
-        });
-
-        // Start
-        window.vykresliMenu();
+        // Inicializace
+        renderProducts();
     </script>
 </body>
 </html>
