@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHASA VLKOV - POS SYSTÉM PRO</title>
+    <title>CHASA VLKOV - KOMPLETNÍ POS</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,24 +14,20 @@
             --bg-body: #dcc8f4;
             --bg-card: #ffffff;
             --text-main: #2c2c2c;
-            --accent-primary: #400356;   /* Klasická fialová */
-            --accent-happy: #ff9800;     /* Oranžová pro Happy Hour */
+            --accent-primary: #400356;   
+            --accent-happy: #ff9800;     
             --accent-success: #28a745;
             --accent-danger: #e74c3c;
             --transition: all 0.3s ease;
             --shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
-        /* --- HAPPY HOUR REŽIM --- */
         body.happy-mode {
             --bg-body: #ffe0b2;
             --accent-primary: #e65100;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -44,16 +40,9 @@
             overflow: hidden;
         }
 
-        /* --- HLAVNÍ SEKCE --- */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-            overflow-y: auto;
-        }
+        /* --- HLAVNÍ PLOCHA --- */
+        .main-content { flex: 1; display: flex; flex-direction: column; padding: 25px; overflow-y: auto; }
 
-        /* Horní Lišta */
         .top-bar {
             background: var(--bg-card);
             padding: 15px 25px;
@@ -65,214 +54,67 @@
             margin-bottom: 25px;
         }
 
-        .category-nav {
-            display: flex;
-            gap: 12px;
-        }
+        .category-nav { display: flex; gap: 10px; align-items: center; }
 
         .nav-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 12px;
-            background: #f1f1f1;
-            font-weight: 600;
+            padding: 10px 18px; border: none; border-radius: 12px;
+            background: #f1f1f1; font-weight: 600; cursor: pointer; transition: var(--transition);
+        }
+        .nav-btn.active { background: var(--accent-primary); color: white; }
+
+        .device-info {
             cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .nav-btn.active {
-            background: var(--accent-primary);
-            color: white;
-        }
-
-        /* Happy Hour Panel */
-        .happy-panel {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-left: 20px;
-            border-left: 2px solid #eee;
-        }
-
-        #timer {
-            font-family: 'monospace';
-            font-size: 1.4rem;
             font-weight: 700;
-            color: var(--accent-happy);
-            display: none;
+            color: var(--accent-primary);
+            text-decoration: underline dotted;
+            margin-right: 15px;
         }
 
-        body.happy-mode #timer {
-            display: block;
-        }
-
-        .happy-trigger {
-            background: var(--accent-happy);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
-        }
+        /* Happy Hour Styl */
+        .happy-panel { display: flex; align-items: center; gap: 15px; padding-left: 20px; border-left: 2px solid #eee; }
+        #timer { font-family: monospace; font-size: 1.4rem; font-weight: 700; color: var(--accent-happy); display: none; }
+        body.happy-mode #timer { display: block; }
+        .happy-trigger { background: var(--accent-happy); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
         /* --- GRID PRODUKTŮ --- */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: 20px;
-        }
-
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
         .product-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid transparent;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 220px;
+            background: var(--bg-card); border-radius: 20px; padding: 20px; text-align: center;
+            box-shadow: var(--shadow); cursor: pointer; transition: var(--transition);
+            border: 2px solid transparent; display: flex; flex-direction: column; height: 210px;
         }
+        .product-card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
+        .price-tag { font-weight: 700; font-size: 1.2rem; color: var(--accent-primary); margin-top: auto; }
+        .discount-label { color: var(--accent-danger); font-size: 0.8rem; text-decoration: line-through; margin-right: 5px; }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-primary);
-        }
+        /* --- SIDEBAR --- */
+        .sidebar { width: 380px; background: var(--bg-card); border-left: 1px solid #eee; display: flex; flex-direction: column; padding: 25px; }
+        .cart-items { flex: 1; overflow-y: auto; margin: 20px 0; }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px; background: #f9f9f9; border-radius: 10px; margin-bottom: 8px; }
+        .total-box { background: #f1f1f1; padding: 20px; border-radius: 20px; text-align: center; }
+        .pay-btn { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--accent-success); color: white; font-weight: 700; font-size: 1.2rem; cursor: pointer; }
 
-        .product-card h3 {
-            margin: 10px 0 5px;
-            font-size: 1.1rem;
-        }
-
-        .price-tag {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--accent-primary);
-        }
-
-        .discount-label {
-            color: var(--accent-danger);
-            font-size: 0.8rem;
-            text-decoration: line-through;
-            margin-right: 5px;
-        }
-
-        /* --- KOŠÍK (SIDEBAR) --- */
-        .sidebar {
-            width: 400px;
-            background: var(--bg-card);
-            border-left: 1px solid #eee;
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.03);
-        }
-
-        .cart-items {
-            flex: 1;
-            overflow-y: auto;
-            margin: 20px 0;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            background: #f9f9f9;
-            border-radius: 12px;
-            margin-bottom: 10px;
-        }
-
-        .checkout-box {
-            background: #f1f1f1;
-            padding: 25px;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .total-price {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-        }
-
-        .pay-btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            background: var(--accent-success);
-            color: white;
-            font-weight: 700;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .pay-btn:active { transform: scale(0.98); }
-
-        /* --- MODÁLY --- */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            width: 95%;
-            max-width: 800px;
-            height: 90vh;
-            border-radius: 30px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            padding: 20px;
-            border-radius: 15px;
-            background: #f9f9f9;
-            text-align: center;
-        }
-
-        /* --- RESPONZIVITA --- */
+        /* --- MODAL --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 95%; max-width: 750px; height: 90vh; border-radius: 25px; padding: 30px; overflow-y: auto; }
+        
         @media (max-width: 900px) {
             body { flex-direction: column; overflow: auto; }
-            .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid #eee; }
-            .modal-content { height: 95vh; padding: 20px; }
+            .sidebar { width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <main class="main-content">
-        
         <header class="top-bar">
-            <nav class="category-nav">
+            <div class="category-nav">
+                <span class="device-info" id="device-display" onclick="changeDeviceID()">Načítám...</span>
                 <button class="nav-btn active" onclick="filterKat('vše', this)">Vše</button>
                 <button class="nav-btn" onclick="filterKat('Panáky', this)">🥃 Panáky</button>
                 <button class="nav-btn" onclick="filterKat('Pivo', this)">🍺 Pivo</button>
-            </nav>
+                <button class="nav-btn" onclick="filterKat('Vstup', this)">🎟️ Vstup</button>
+            </div>
 
             <div class="happy-panel">
                 <div id="timer">02:30:00</div>
@@ -280,9 +122,7 @@
             </div>
         </header>
 
-        <div class="product-grid" id="product-grid">
-            </div>
-
+        <div class="product-grid" id="product-grid"></div>
     </main>
 
     <aside class="sidebar">
@@ -290,53 +130,28 @@
             <h2 style="margin:0;">Košík</h2>
             <button class="nav-btn" onclick="openStats()">📊 Tržba</button>
         </div>
-
-        <div class="cart-items" id="cart-items">
-            </div>
-
-        <div class="checkout-box">
-            <div class="total-price" id="total-display">0 Kč</div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="total-box">
+            <div id="total-display" style="font-size: 2.2rem; font-weight: 800; margin-bottom:15px;">0 Kč</div>
             <button class="pay-btn" onclick="processPayment()">ZAPLATIT</button>
         </div>
     </aside>
 
     <div class="modal" id="stats-modal">
         <div class="modal-content">
-            <button onclick="closeStats()" style="position:absolute; top:20px; right:20px; border:none; background:none; font-size:2rem; cursor:pointer;">&times;</button>
-            
-            <h2>Analýza Prodeje</h2>
-            
-            <div style="height:250px;">
-                <canvas id="sales-chart"></canvas>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2>Statistiky</h2>
+                <button class="nav-btn" onclick="closeStats()">Zavřít</button>
             </div>
-
-            <div class="stats-grid">
-                <div class="stat-card" style="background:#f3e5f5;">
-                    <small>Celková Tržba</small>
-                    <h3 id="stat-total-kc" style="margin:5px 0;">0 Kč</h3>
-                </div>
-                <div class="stat-card" style="background:#fff3e0;">
-                    <small>Happy Hour podíl</small>
-                    <h3 id="stat-happy-kc" style="margin:5px 0;">0 Kč</h3>
-                </div>
-                <div class="stat-card" style="background:#e8f5e9;">
-                    <small>Počet Účtenek</small>
-                    <h3 id="stat-orders-count" style="margin:5px 0;">0</h3>
-                </div>
-            </div>
-
-            <div style="flex:1; overflow-y:auto; border-top:1px solid #eee; padding-top:20px;">
-                <h3>Historie</h3>
-                <div id="history-log"></div>
-            </div>
+            <div style="height:200px;"><canvas id="sales-chart"></canvas></div>
+            <div id="history-log" style="margin-top:20px; border-top:1px solid #eee;"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- 1. CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -351,17 +166,17 @@
         const db = getDatabase(app);
         const barRef = ref(db, 'bar_data/historie');
 
-        // --- 2. PRODUKTY (Zde nastavuješ slevu v Kč) ---
+        // --- KONFIGURACE SORTIMENTU ---
         const sortiment = [
-            { id: 1, nazev: "Slivovice", cena: 50, sleva: 10, kat: "Panáky" },
-            { id: 2, nazev: "Hruškovice", cena: 50, sleva: 10, kat: "Panáky" },
-            { id: 3, nazev: "Tuzemák", cena: 35, sleva: 5, kat: "Panáky" },
-            { id: 4, nazev: "Pivo 12°", cena: 50, sleva: 10, kat: "Pivo" },
-            { id: 5, nazev: "Pivo 10°", cena: 40, sleva: 5, kat: "Pivo" },
-            { id: 6, nazev: "Zelená", cena: 30, sleva: 5, kat: "Panáky" }
+            { nazev: "Slivovice", cena: 50, sleva: 10, kat: "Panáky", icon: "🥃" },
+            { nazev: "Hruškovice", cena: 50, sleva: 10, kat: "Panáky", icon: "🥃" },
+            { nazev: "Rum", cena: 40, sleva: 5, kat: "Panáky", icon: "🥃" },
+            { nazev: "Pivo 12°", cena: 50, sleva: 10, kat: "Pivo", icon: "🍺" },
+            { nazev: "Pivo 10°", cena: 40, sleva: 5, kat: "Pivo", icon: "🍺" },
+            { nazev: "Vstupné Dospělí", cena: 200, sleva: 0, kat: "Vstup", icon: "🎟️" },
+            { nazev: "Vstupné Student", cena: 100, sleva: 0, kat: "Vstup", icon: "🎟️" }
         ];
 
-        // --- 3. STAV APLIKACE ---
         let cart = {};
         let currentKat = 'vše';
         let isHappy = false;
@@ -370,48 +185,36 @@
         let historyData = [];
         let chartInstance = null;
 
-        // --- 4. FUNKCE: HAPPY HOUR & TIMER ---
+        // --- DEVICE ID (Místo číšníka) ---
+        let deviceID = localStorage.getItem('bar_device_id') || 'Pokladna-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        localStorage.setItem('bar_device_id', deviceID);
+        document.getElementById('device-display').innerText = `Místo: ${deviceID}`;
+
+        window.changeDeviceID = () => {
+            const n = prompt("Zadej název místa (např. Bar, Výčep, Vstup):", deviceID);
+            if(n) { deviceID = n; localStorage.setItem('bar_device_id', n); document.getElementById('device-display').innerText = `Místo: ${deviceID}`; }
+        };
+
+        // --- HAPPY HOUR ---
         window.toggleHappyHour = () => {
-            if (!isHappy) {
-                isHappy = true;
-                document.body.classList.add('happy-mode');
-                // Nastavit konec za 2.5 hodiny
+            isHappy = !isHappy;
+            document.body.classList.toggle('happy-mode', isHappy);
+            clearInterval(timerInterval);
+            if(isHappy) {
                 happyEndTime = Date.now() + (2.5 * 60 * 60 * 1000);
-                startTimer();
-            } else {
-                stopHappyHour();
+                timerInterval = setInterval(updateTimer, 1000);
             }
             renderProducts();
         };
 
-        function stopHappyHour() {
-            isHappy = false;
-            document.body.classList.remove('happy-mode');
-            clearInterval(timerInterval);
-            document.getElementById('timer').innerText = "02:30:00";
-            renderProducts();
+        function updateTimer() {
+            const diff = happyEndTime - Date.now();
+            if(diff <= 0) { toggleHappyHour(); return; }
+            const h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
+            document.getElementById('timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         }
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                const now = Date.now();
-                const diff = happyEndTime - now;
-
-                if (diff <= 0) {
-                    stopHappyHour();
-                    return;
-                }
-
-                const h = Math.floor(diff / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                const s = Math.floor((diff % 60000) / 1000);
-                
-                document.getElementById('timer').innerText = 
-                    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            }, 1000);
-        }
-
-        // --- 5. FUNKCE: RENDER PRODUKTŮ ---
+        // --- LOGIKA MENU ---
         window.filterKat = (kat, btn) => {
             currentKat = kat;
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -422,43 +225,20 @@
         window.renderProducts = () => {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
-
-            const filtered = sortiment.filter(p => currentKat === 'vše' || p.kat === currentKat);
-
-            filtered.forEach(p => {
+            sortiment.filter(p => currentKat === 'vše' || p.kat === currentKat).forEach(p => {
                 const finalPrice = isHappy ? (p.cena - p.sleva) : p.cena;
-                
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.onclick = () => addToCart(p.nazev, finalPrice);
-                
-                card.innerHTML = `
-                    <div style="font-size: 3rem;">${p.kat === 'Pivo' ? '🍺' : '🥃'}</div>
-                    <h3>${p.nazev}</h3>
-                    <div class="price-tag">
-                        ${isHappy && p.sleva > 0 ? `<span class="discount-label">${p.cena}</span>` : ''}
-                        ${finalPrice} Kč
-                    </div>
-                `;
+                card.innerHTML = `<div style="font-size:2.5rem">${p.icon}</div><h3>${p.nazev}</h3><div class="price-tag">${isHappy && p.sleva > 0 ? `<span class="discount-label">${p.cena}</span>`:''}${finalPrice} Kč</div>`;
                 grid.appendChild(card);
             });
         };
 
-        // --- 6. FUNKCE: KOŠÍK ---
-        window.addToCart = (nazev, cena) => {
-            if (cart[nazev]) {
-                cart[nazev].count++;
-                cart[nazev].sum += cena;
-            } else {
-                cart[nazev] = { count: 1, price: cena, sum: cena };
-            }
-            updateCartUI();
-        };
-
-        window.removeFromCart = (nazev) => {
-            cart[nazev].count--;
-            cart[nazev].sum -= cart[nazev].price;
-            if (cart[nazev].count <= 0) delete cart[nazev];
+        // --- KOŠÍK ---
+        window.addToCart = (n, c) => {
+            if(cart[n]) { cart[n].count++; cart[n].sum += c; }
+            else { cart[n] = { count: 1, price: c, sum: c }; }
             updateCartUI();
         };
 
@@ -466,99 +246,56 @@
             const container = document.getElementById('cart-items');
             container.innerHTML = '';
             let total = 0;
-
-            Object.entries(cart).forEach(([nazev, data]) => {
-                total += data.sum;
-                const item = document.createElement('div');
-                item.className = 'cart-item';
-                item.innerHTML = `
-                    <span><strong>${data.count}x</strong> ${nazev}</span>
-                    <span>${data.sum} Kč <button onclick="removeFromCart('${nazev}')" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold; margin-left:10px;">&times;</button></span>
-                `;
-                container.appendChild(item);
+            Object.entries(cart).forEach(([n, d]) => {
+                total += d.sum;
+                container.innerHTML += `<div class="cart-item"><span><strong>${d.count}x</strong> ${n}</span><span>${d.sum} Kč <button onclick="removeFromCart('${n}')" style="border:none; color:red; cursor:pointer; font-weight:bold;">&times;</button></span></div>`;
             });
-
             document.getElementById('total-display').innerText = `${total} Kč`;
         }
 
-        // --- 7. FUNKCE: FIREBASE PROPOJENÍ ---
+        window.removeFromCart = (n) => {
+            cart[n].count--; cart[n].sum -= cart[n].price;
+            if(cart[n].count <= 0) delete cart[n];
+            updateCartUI();
+        }
+
         window.processPayment = () => {
             const total = parseInt(document.getElementById('total-display').innerText);
-            if (total === 0) return;
-
+            if(total === 0) return;
             push(barRef, {
                 timestamp: Date.now(),
                 cas: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                 polozky: {...cart},
                 cenaCelkem: total,
-                isHappy: isHappy
-            }).then(() => {
-                cart = {};
-                updateCartUI();
-            });
+                isHappy: isHappy,
+                autor: deviceID // Zápis místa do DB
+            }).then(() => { cart = {}; updateCartUI(); });
         };
 
-        onValue(barRef, (snap) => {
-            const data = snap.val();
-            historyData = data ? Object.values(data) : [];
-        });
+        // --- ANALYTIKA ---
+        onValue(barRef, (snap) => { historyData = snap.val() ? Object.values(snap.val()) : []; });
 
-        // --- 8. ANALYTIKA A GRAFY ---
         window.openStats = () => {
             document.getElementById('stats-modal').style.display = 'flex';
-            renderStats();
-        };
-
-        window.closeStats = () => {
-            document.getElementById('stats-modal').style.display = 'none';
-        };
-
-        function renderStats() {
-            let totalKc = 0;
-            let happyKc = 0;
             const log = document.getElementById('history-log');
             log.innerHTML = '';
-
-            historyData.sort((a,b) => b.timestamp - a.timestamp).forEach(order => {
-                totalKc += order.cenaCelkem;
-                if (order.isHappy) happyKc += order.cenaCelkem;
-
-                const entry = document.createElement('div');
-                entry.style.padding = '10px 0';
-                entry.style.borderBottom = '1px solid #eee';
-                entry.innerHTML = `
-                    <strong>${order.cas} - ${order.cenaCelkem} Kč</strong> ${order.isHappy ? '⚡ HH' : ''}<br>
-                    <small>${Object.entries(order.polozky).map(([n, d]) => `${d.count}x ${n}`).join(', ')}</small>
-                `;
-                log.appendChild(entry);
+            let total = 0, happyT = 0;
+            
+            historyData.sort((a,b) => b.timestamp - a.timestamp).forEach(o => {
+                total += o.cenaCelkem;
+                if(o.isHappy) happyT += o.cenaCelkem;
+                log.innerHTML += `<div style="padding:8px 0; border-bottom:1px solid #eee;"><strong>${o.cas} - ${o.cenaCelkem} Kč</strong> [${o.autor || '?'}]<br><small>${Object.entries(o.polozky).map(([n,d])=>`${d.count}x ${n}`).join(', ')}</small></div>`;
             });
 
-            document.getElementById('stat-total-kc').innerText = `${totalKc} Kč`;
-            document.getElementById('stat-happy-kc').innerText = `${happyKc} Kč`;
-            document.getElementById('stat-orders-count').innerText = historyData.length;
-
-            // Chart.js
-            const ctx = document.getElementById('sales-chart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
-            chartInstance = new Chart(ctx, {
+            if(chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(document.getElementById('sales-chart'), {
                 type: 'doughnut',
-                data: {
-                    labels: ['Standard', 'Happy Hour ⚡'],
-                    datasets: [{
-                        data: [totalKc - happyKc, happyKc],
-                        backgroundColor: ['#400356', '#ff9800'],
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
+                data: { labels: ['Klasika', 'Happy Hour ⚡'], datasets: [{ data: [total-happyT, happyT], backgroundColor: ['#400356', '#ff9800'] }] }
             });
-        }
+        };
 
-        // Inicializace
+        window.closeStats = () => document.getElementById('stats-modal').style.display = 'none';
+
         renderProducts();
     </script>
 </body>
