@@ -3,64 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHASA VLKOV - POS SYSTÉM (FIX)</title>
+    <title>CHASA VLKOV - PROFESIONÁLNÍ BAROVÝ SYSTÉM</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- STYLY ZŮSTÁVAJÍ STEJNÉ --- */
-        :root { --bg-body: #f0e6ff; --bg-card: #ffffff; --text-main: #2c2c2c; --accent-primary: #400356; --accent-happy: #ff9800; --accent-success: #2ecc71; --accent-danger: #e74c3c; --accent-info: #3498db; --shadow: 0 8px 30px rgba(0,0,0,0.1); --radius: 18px; }
+        :root {
+            --bg-body: #f0e6ff;
+            --bg-card: #ffffff;
+            --text-main: #2c2c2c;
+            --accent-primary: #400356;   
+            --accent-happy: #ff9800;     
+            --accent-success: #2ecc71;
+            --accent-danger: #e74c3c;
+            --shadow: 0 8px 30px rgba(0,0,0,0.1);
+            --radius: 18px;
+        }
+
         body.happy-mode { --bg-body: #fff4e6; --accent-primary: #e65100; }
+
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { margin: 0; height: 100vh; display: flex; background: var(--bg-body); transition: all 0.5s ease; overflow: hidden; }
+
         .main-view { flex: 1; display: flex; flex-direction: column; padding: 25px; overflow-y: auto; }
-        .sidebar { width: 420px; background: var(--bg-card); border-left: 1px solid #eee; display: flex; flex-direction: column; padding: 25px; box-shadow: -5px 0 20px rgba(0,0,0,0.02); }
-        .top-bar { background: var(--bg-card); padding: 15px 25px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); margin-bottom: 25px; }
-        .device-tag { cursor: pointer; font-weight: 700; color: var(--accent-primary); border-bottom: 2px solid; padding-bottom: 2px; }
-        .category-nav { display: flex; gap: 10px; }
+        .sidebar { width: 420px; background: var(--bg-card); border-left: 1px solid #eee; display: flex; flex-direction: column; padding: 25px; box-shadow: -5px 0 20px rgba(0,0,0,0.02); z-index: 10; }
+
+        .top-bar {
+            background: var(--bg-card); padding: 15px 25px; border-radius: var(--radius);
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow); margin-bottom: 25px;
+        }
+        .device-tag { cursor: pointer; font-weight: 700; color: var(--accent-primary); border-bottom: 2px solid; padding-bottom: 2px; margin-right: 15px; }
+
+        .category-nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .btn-nav { border: none; padding: 10px 18px; border-radius: 12px; background: #f3f3f3; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .btn-nav.active { background: var(--accent-primary); color: white; }
+
         .happy-box { display: flex; align-items: center; gap: 15px; border-left: 2px solid #eee; padding-left: 20px; }
         #timer-text { font-family: monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent-happy); display: none; }
         body.happy-mode #timer-text { display: block; }
         .btn-happy { background: var(--accent-happy); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
-        .product-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: var(--shadow); cursor: pointer; transition: 0.3s; border: 2px solid transparent; display: flex; flex-direction: column; height: 230px; }
+        .product-card {
+            background: var(--bg-card); border-radius: var(--radius); padding: 20px; text-align: center;
+            box-shadow: var(--shadow); cursor: pointer; transition: 0.3s; border: 2px solid transparent;
+            display: flex; flex-direction: column; height: 230px;
+        }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
         .product-icon { font-size: 2.8rem; margin-bottom: 10px; }
         .product-name { font-weight: 600; margin: 10px 0; font-size: 1rem; flex-grow: 1; }
         .product-price { font-weight: 700; font-size: 1.3rem; color: var(--accent-primary); }
         .old-price { text-decoration: line-through; font-size: 0.9rem; color: #999; margin-right: 5px; }
+
         .cart-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .cart-list { flex: 1; overflow-y: auto; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 12px; margin-bottom: 8px; }
         .cart-total-box { background: #f3f3f3; padding: 25px; border-radius: 20px; text-align: center; margin-top: 20px; }
         .btn-pay { width: 100%; padding: 18px; border: none; border-radius: 15px; background: var(--accent-success); color: white; font-weight: 700; font-size: 1.2rem; cursor: pointer; }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-content { background: white; width: 95%; max-width: 900px; height: 95vh; border-radius: 30px; padding: 40px; overflow-y: auto; position: relative; }
         .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
         .chart-container { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; height: 250px; }
+
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-brick { padding: 20px; border-radius: 15px; text-align: center; background: #f9f9f9; border: 1px solid #eee; }
         .stat-brick.main { background: var(--accent-primary); color: white; }
         .stat-brick.main strong { color: white !important; }
         .stat-brick strong { display: block; font-size: 1.4rem; color: var(--accent-primary); margin: 5px 0; }
         .stat-brick small { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; opacity: 0.8; }
-        .stat-detail { font-size: 0.8rem; color: #666; font-weight: 500; }
-        @media (max-width: 1000px) { body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid #eee; } .charts-row { grid-template-columns: 1fr; } }
+        .stat-detail { font-size: 0.85rem; color: #666; font-weight: 600; margin-top: 5px; }
+
+        .history-wrap { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .history-list { max-height: 250px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; }
+        .btn-archive { width: 100%; padding: 15px; border: none; border-radius: 15px; background: var(--accent-danger); color: white; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .btn-archive:hover { opacity: 0.9; }
+
+        @media (max-width: 1000px) {
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid #eee; }
+            .charts-row { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
+
     <main class="main-view">
         <header class="top-bar">
-            <div class="category-nav">
+            <div class="category-nav" id="nav-container">
                 <span class="device-tag" id="loc-display" onclick="updateLocation()">Místo: Načítám...</span>
                 <button class="btn-nav active" onclick="setFilter('vše', this)">Vše</button>
-                <button class="btn-nav" onclick="setFilter('Panáky', this)">🥃 Panáky</button>
-                <button class="btn-nav" onclick="setFilter('Pivo', this)">🍺 Pivo</button>
-                <button class="btn-nav" onclick="setFilter('Vstup', this)">🎟️ Vstup</button>
-            </div>
+                </div>
+            
             <div class="happy-box">
                 <div id="timer-text">02:30:00</div>
                 <button class="btn-happy" onclick="triggerHappy()">⚡ HAPPY HOUR</button>
@@ -85,33 +121,78 @@
         <div class="modal-content">
             <button onclick="hideStats()" style="position:absolute; top:20px; right:30px; background:none; border:none; font-size:2.5rem; cursor:pointer;">&times;</button>
             <h1 style="margin-top:0;">Barový Dashboard</h1>
+
             <div class="stats-grid">
-                <div class="stat-brick main"><small>Celková tržba</small><strong id="st-total-kc">0 Kč</strong></div>
-                <div class="stat-brick"><small>Počet objednávek</small><strong id="st-orders-count">0</strong></div>
-                <div class="stat-brick"><small>Průměrná objednávka</small><strong id="st-avg-order">0 Kč</strong></div>
+                <div class="stat-brick main">
+                    <small>Celková tržba</small>
+                    <strong id="st-total-kc">0 Kč</strong>
+                </div>
+                <div class="stat-brick">
+                    <small>Počet objednávek</small>
+                    <strong id="st-orders-count">0</strong>
+                </div>
+                <div class="stat-brick">
+                    <small>Průměrná útrata na bar</small>
+                    <strong id="st-avg-order">0 Kč</strong>
+                </div>
             </div>
+
             <div class="charts-row">
                 <div class="chart-container"><h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">PODÍL TRŽEB (%)</h3><canvas id="chart-pie"></canvas></div>
                 <div class="chart-container"><h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">TRŽBA DLE SKUPIN (Kč)</h3><canvas id="chart-bar"></canvas></div>
             </div>
-            <div class="stats-grid">
-                <div class="stat-brick" style="border-top: 4px solid var(--accent-danger);"><small>🥃 PANÁKY</small><strong id="st-kc-panaky">0 Kč</strong><div class="stat-detail" id="st-det-panaky">0 ks | ø 0 Kč</div></div>
-                <div class="stat-brick" style="border-top: 4px solid var(--accent-success);"><small>🍺 PIVO</small><strong id="st-kc-pivo">0 Kč</strong><div class="stat-detail" id="st-det-pivo">0 ks | ø 0 Kč</div></div>
-                <div class="stat-brick" style="border-top: 4px solid var(--accent-info);"><small>🎟️ VSTUP</small><strong id="st-kc-vstup">0 Kč</strong><div class="stat-detail" id="st-det-vstup">0 ks | ø 0 Kč</div></div>
-            </div>
-            <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
+
+            <div class="stats-grid" id="stats-categories-container"></div>
+
+            <div class="history-wrap">
                 <h3>Poslední pohyby</h3>
-                <div id="stats-log" style="font-size: 0.85rem;"></div>
+                <div class="history-list" id="stats-log"></div>
+                <button class="btn-archive" onclick="archiveData()">🗑️ Smazat a archivovat tržbu</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- KONFIGURACE (Zde vlož své údaje) ---
-        const firebaseConfig = {
+        // =====================================================================
+        // ⚙️ HLAVNÍ NASTAVENÍ APLIKACE (MĚŇTE POUZE V TÉTO SEKCI) ⚙️
+        // =====================================================================
+
+        // 1. TEXTY A UPOZORNĚNÍ (Prompt, Alert, Confirm okna)
+        const TEXTY = {
+            vyzvaMisto: "Kde zrovna jsi? (např. Bar, Výčep, Vstup)",
+            chybaPrazdnaKasa: "Kasa je prázdná, není co archivovat.",
+            dotazArchivace: "Opravdu smazat aktuální kasu a uložit tržbu do archivu?",
+            uspechArchivace: "Hotovo! Tržba byla uložena do archivu a kasa je vynulovaná."
+        };
+
+        // 2. KATEGORIE PRODUKTŮ
+        // id = název, který propojíte se sortimentem níže (nesmí mít mezery na konci/začátku)
+        // btnText = co bude na tlačítku v horním menu
+        // color = barva dané kategorie pro statistiky a grafy
+        const KATEGORIE = [
+            { id: "Panáky", btnText: "🥃 Panáky", color: "#e74c3c" },
+            { id: "Pivo",   btnText: "🍺 Pivo",   color: "#2ecc71" },
+            { id: "Vstup",  btnText: "🎟️ Vstup",  color: "#3498db" }
+            // Můžete přidat např.: { id: "Vino", btnText: "🍷 Víno", color: "#8e44ad" }
+        ];
+
+        // 3. SEZNAM PRODUKTŮ (SORTIMENT)
+        // n = Název, c = Běžná cena, s = O kolik zlevní v Happy Hour, k = Kategorie (dle 'id' z bodu 2), i = Ikonka (emoji)
+        const SORTIMENT = [
+            { n: "Slivovice", c: 50, s: 10, k: "Panáky", i: "🥃" },
+            { n: "Hruškovice", c: 50, s: 10, k: "Panáky", i: "🥃" },
+            { n: "Rum", c: 40, s: 5, k: "Panáky", i: "🥃" },
+            { n: "Pivo 12°", c: 50, s: 10, k: "Pivo", i: "🍺" },
+            { n: "Pivo 10°", c: 40, s: 5, k: "Pivo", i: "🍺" },
+            { n: "Vstupné Dospělí", c: 200, s: 0, k: "Vstup", i: "🎟️" },
+            { n: "Vstupné Student", c: 100, s: 0, k: "Vstup", i: "🎟️" }
+        ];
+
+        // 4. FIREBASE KONFIGURACE (Zde nesahat, pokud neměníte projekt)
+        const FIREBASE_CONFIG = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
             databaseURL: "https://chasapp-6767-default-rtdb.europe-west1.firebasedatabase.app",
@@ -121,19 +202,13 @@
             appId: "1:43938163594:web:c93eca87f35d47c4eff673"
         };
 
-        const app = initializeApp(firebaseConfig);
+        // =====================================================================
+        // 🛑 KONEC NASTAVENÍ - KÓD NÍŽE UŽ OPRAVUJE APLIKACI SÁM 🛑
+        // =====================================================================
+
+        const app = initializeApp(FIREBASE_CONFIG);
         const db = getDatabase(app);
         const barRef = ref(db, 'bar_data/historie');
-
-        const sortiment = [
-            { n: "Slivovice", c: 50, s: 10, k: "Panáky", i: "🥃" },
-            { n: "Hruškovice", c: 50, s: 10, k: "Panáky", i: "🥃" },
-            { n: "Rum", c: 40, s: 5, k: "Panáky", i: "🥃" },
-            { n: "Pivo 12°", c: 50, s: 10, k: "Pivo", i: "🍺" },
-            { n: "Pivo 10°", c: 40, s: 5, k: "Pivo", i: "🍺" },
-            { n: "Vstupné Dospělí", c: 200, s: 0, k: "Vstup", i: "🎟️" },
-            { n: "Vstupné Student", c: 100, s: 0, k: "Vstup", i: "🎟️" }
-        ];
 
         let kosik = {};
         let filtr = 'vše';
@@ -146,9 +221,18 @@
 
         document.getElementById('loc-display').innerText = `Místo: ${locID}`;
 
-        // --- FUNKCE ---
+        // Generování tlačítek kategorií z nastavení
+        const navContainer = document.getElementById('nav-container');
+        KATEGORIE.forEach(kat => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-nav';
+            btn.innerText = kat.btnText;
+            btn.onclick = function() { setFilter(kat.id, this); };
+            navContainer.appendChild(btn);
+        });
+
         window.updateLocation = () => {
-            const n = prompt("Kde zrovna jsi?", locID);
+            const n = prompt(TEXTY.vyzvaMisto, locID);
             if(n) { locID = n; localStorage.setItem('loc_id', n); document.getElementById('loc-display').innerText = `Místo: ${n}`; }
         };
 
@@ -178,7 +262,7 @@
         window.renderMenu = () => {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
-            sortiment.filter(p => filtr === 'vše' || p.k === filtr).forEach(p => {
+            SORTIMENT.filter(p => filtr === 'vše' || p.k === filtr).forEach(p => {
                 const pc = isHappy ? (p.c - p.s) : p.c;
                 grid.innerHTML += `
                     <div class="product-card" onclick="add('${p.n}', ${pc})">
@@ -207,7 +291,7 @@
             let t = 0;
             Object.entries(kosik).forEach(([n, d]) => {
                 t += d.s;
-                l.innerHTML += `<div class="cart-item"><span><strong>${d.q}x</strong> ${n}</span><span>${d.s} Kč <button onclick="remove('${n}')" style="border:none; color:red; cursor:pointer;">&times;</button></span></div>`;
+                l.innerHTML += `<div class="cart-item"><span><strong>${d.q}x</strong> ${n}</span><span>${d.s} Kč <button onclick="remove('${n}')" style="border:none; color:red; font-size:1.2rem; cursor:pointer;">&times;</button></span></div>`;
             });
             document.getElementById('cart-total').innerText = `${t} Kč`;
         }
@@ -215,24 +299,19 @@
         window.finishOrder = () => {
             const t = parseInt(document.getElementById('cart-total').innerText);
             if(t === 0) return;
-            // ZDE JE KLÍČOVÁ ZMĚNA: Ukládám starý název "cenaCelkem" i nový "celkem", aby to bylo 100% kompatibilní
             push(barRef, {
                 ts: Date.now(),
                 cas: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-                data: {...kosik},       // Nový název pro položky
-                polozky: {...kosik},    // Starý název pro jistotu
-                celkem: t,              // Nový název ceny
-                cenaCelkem: t,          // Starý název ceny
+                data: {...kosik},       
+                polozky: {...kosik},    
+                celkem: t,              
+                cenaCelkem: t,          
                 isHH: isHappy,
                 misto: locID
             }).then(() => { kosik = {}; updateCart(); });
         };
 
-        // --- NAČÍTÁNÍ DAT ---
-        onValue(barRef, (s) => {
-            historie = s.val() ? Object.values(s.val()) : [];
-            console.log("Načteno záznamů:", historie.length); // Pro kontrolu v konzoli
-        });
+        onValue(barRef, (s) => { historie = s.val() ? Object.values(s.val()) : []; });
 
         window.showStats = () => {
             document.getElementById('stats-modal').style.display = 'flex';
@@ -241,47 +320,73 @@
 
         window.hideStats = () => document.getElementById('stats-modal').style.display = 'none';
 
-        // --- OPRAVENÁ FUNKCE PRO VÝPOČET STATISTIK ---
         function runStats() {
             let total = 0, count = historie.length;
-            let cats = { "Panáky": {kc:0, ks:0}, "Pivo": {kc:0, ks:0}, "Vstup": {kc:0, ks:0} };
+            
+            // Dynamické vytvoření struktury pro počítání podle nastavení kategorií
+            let cats = {};
+            KATEGORIE.forEach(k => { cats[k.id] = { kc: 0, ks: 0, orders: 0 }; });
+            
             const log = document.getElementById('stats-log');
             log.innerHTML = '';
 
             historie.sort((a,b) => b.ts - a.ts).forEach(o => {
-                // UNIVERZÁLNÍ ČTENÍ: Zkusí najít 'celkem', když není, zkusí 'cenaCelkem', když ani to, tak 0
                 const castka = o.celkem || o.cenaCelkem || 0;
-                // UNIVERZÁLNÍ ČTENÍ: Zkusí najít 'data', když není, zkusí 'polozky', když ani to, tak prázdný objekt
                 const polozkyList = o.data || o.polozky || {};
 
                 total += castka;
 
-                Object.entries(polozkyList).forEach(([n, d]) => {
-                    const k = sortiment.find(x => x.n === n)?.k;
-                    // Ošetření starší struktury dat, kde 'd' může mít jiné vlastnosti
-                    const cenaPolozky = d.s || d.suma || 0;
-                    const pocetPolozky = d.q || d.pocet || 0;
+                let hasCategory = {};
+                KATEGORIE.forEach(k => hasCategory[k.id] = false);
+                let polozkyKusy = [];
 
-                    if(k) { 
+                Object.entries(polozkyList).forEach(([n, d]) => {
+                    const k = SORTIMENT.find(x => x.n === n)?.k;
+                    const cenaPolozky = d.s || d.suma || 0;
+                    const pocetPolozky = d.q || d.pocet || d.count || 1; 
+
+                    if(k && cats[k]) { 
                         cats[k].kc += cenaPolozky; 
                         cats[k].ks += pocetPolozky; 
+                        hasCategory[k] = true; 
                     }
+                    polozkyKusy.push(`<b>${pocetPolozky}x</b> ${n}`); 
                 });
 
-                log.innerHTML += `<div><b>${o.cas || '??:??'} - ${castka} Kč</b> [${o.misto || '?'}] ${o.isHH?'⚡':''} <small>${Object.keys(polozkyList).join(', ')}</small></div>`;
+                // Přičtení k počtu objednávek pro danou kategorii
+                KATEGORIE.forEach(k => { if (hasCategory[k.id]) cats[k.id].orders++; });
+
+                log.innerHTML += `
+                    <div style="padding: 8px 0; border-bottom: 1px dashed #ccc;">
+                        <b style="color:var(--accent-primary);">${o.cas || '??:??'} - ${castka} Kč</b> 
+                        <span style="font-size:0.8rem; color:#666;">[${o.misto || '?'}]</span> ${o.isHH?'⚡':''}<br>
+                        <small style="color:#555;">${polozkyKusy.join(', ')}</small>
+                    </div>`;
             });
 
-            // Výpis do HTML
+            // Hlavní UI součty
             document.getElementById('st-total-kc').innerText = total + " Kč";
             document.getElementById('st-orders-count').innerText = count;
             document.getElementById('st-avg-order').innerText = count ? Math.round(total/count) + " Kč" : "0 Kč";
 
-            ["Panáky", "Pivo", "Vstup"].forEach(k => {
-                const id = k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                document.getElementById(`st-kc-${id}`).innerText = cats[k].kc + " Kč";
-                const avg = cats[k].ks ? Math.round(cats[k].kc / cats[k].ks) : 0;
-                document.getElementById(`st-det-${id}`).innerText = `${cats[k].ks} ks | ø ${avg} Kč`;
+            // Dynamické vytvoření cihel pro statistiky
+            const catsContainer = document.getElementById('stats-categories-container');
+            catsContainer.innerHTML = '';
+            
+            KATEGORIE.forEach(k => {
+                const avgCatOrder = cats[k.id].orders ? Math.round(cats[k.id].kc / cats[k.id].orders) : 0;
+                catsContainer.innerHTML += `
+                    <div class="stat-brick" style="border-top: 4px solid ${k.color};">
+                        <small>${k.btnText.toUpperCase()}</small>
+                        <strong>${cats[k.id].kc} Kč</strong>
+                        <div class="stat-detail">${cats[k.id].ks} ks | ø ${avgCatOrder} Kč / obj.</div>
+                    </div>`;
             });
+
+            // Příprava dat pro grafy
+            const labels = KATEGORIE.map(k => k.id);
+            const dataKc = KATEGORIE.map(k => cats[k.id].kc);
+            const colors = KATEGORIE.map(k => k.color);
 
             // Vykreslení grafů
             if(chartPie) chartPie.destroy();
@@ -289,22 +394,34 @@
 
             chartPie = new Chart(document.getElementById('chart-pie'), {
                 type: 'doughnut',
-                data: {
-                    labels: ['Panáky', 'Pivo', 'Vstup'],
-                    datasets: [{ data: [cats["Panáky"].kc, cats["Pivo"].kc, cats["Vstup"].kc], backgroundColor: ['#e74c3c','#2ecc71','#3498db'] }]
-                },
+                data: { labels: labels, datasets: [{ data: dataKc, backgroundColor: colors }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
 
             chartBar = new Chart(document.getElementById('chart-bar'), {
                 type: 'bar',
-                data: {
-                    labels: ['Panáky', 'Pivo', 'Vstup'],
-                    datasets: [{ label: 'Tržba', data: [cats["Panáky"].kc, cats["Pivo"].kc, cats["Vstup"].kc], backgroundColor: ['#e74c3c','#2ecc71','#3498db'] }]
-                },
+                data: { labels: labels, datasets: [{ label: 'Tržba', data: dataKc, backgroundColor: colors }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
             });
         }
+
+        window.archiveData = () => {
+            if (historie.length === 0) return alert(TEXTY.chybaPrazdnaKasa);
+            if (confirm(TEXTY.dotazArchivace)) {
+                const archiveID = new Date().toISOString().replace(/\./g, '_');
+                const archiveRef = ref(db, 'bar_data/archiv/' + archiveID);
+                
+                set(archiveRef, {
+                    data: historie,
+                    export_cas: new Date().toLocaleString(),
+                    total_kc: document.getElementById('st-total-kc').innerText
+                }).then(() => {
+                    remove(barRef);
+                    alert(TEXTY.uspechArchivace);
+                    hideStats();
+                });
+            }
+        };
 
         renderMenu();
     </script>
