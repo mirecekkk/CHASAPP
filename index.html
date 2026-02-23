@@ -52,7 +52,12 @@
             display: flex; flex-direction: column; height: 230px;
         }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
-        .product-icon { font-size: 2.8rem; margin-bottom: 10px; }
+        
+        /* NOVÉ STYLY PRO OBRÁZKY A EMOJI */
+        .product-media { height: 90px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; }
+        .product-media img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+        .product-media span { font-size: 3.5rem; }
+        
         .product-name { font-weight: 600; margin: 10px 0; font-size: 1rem; flex-grow: 1; }
         .product-price { font-weight: 700; font-size: 1.3rem; color: var(--accent-primary); }
         .old-price { text-decoration: line-through; font-size: 0.9rem; color: #999; margin-right: 5px; }
@@ -95,7 +100,7 @@
             <div class="category-nav" id="nav-container">
                 <span class="device-tag" id="loc-display" onclick="updateLocation()">Místo: Načítám...</span>
                 <button class="btn-nav active" onclick="setFilter('vše', this)">Vše</button>
-                </div>
+            </div>
             
             <div class="happy-box">
                 <div id="timer-text">02:30:00</div>
@@ -160,7 +165,6 @@
         //   HLAVNÍ NASTAVENÍ APLIKACE (PŘEPISOVAT JENOM TOTO!) 
         // =====================================================================
 
-        // 1. TEXTY A UPOZORNĚNÍ (Prompt, Alert, Confirm okna)
         const TEXTY = {
             vyzvaMisto: "Napiš kde jsi.(Bar, Výčep, Vstup, Šatna)",
             chybaPrazdnaKasa: "Kámo tady nic není ale.",
@@ -168,19 +172,12 @@
             uspechArchivace: "Vymazáno. (Pořád mám archiv:D)"
         };
 
-        // 2. KATEGORIE PRODUKTŮ
-        // id = název, který se propojí se sortimentem níž (nesmí mít mezery na konci/začátku)
-        // btnText = co bude na tlačítku v horním menu
-        // color = barva dané kategorie pro statistiky a grafy
         const KATEGORIE = [
             { id: "Bar", btnText: "🥃 Bar", color: "#e74c3c" },
             { id: "Výčep",   btnText: "🍺 Výčep",   color: "#2ecc71" },
             { id: "Vstup",  btnText: "🎟️ Vstup",  color: "#3498db" }
-            // přidávat stylem: { id: "Vino", btnText: "🍷 Víno", color: "#8e44ad" }
         ];
 
-        // 3. SEZNAM PRODUKTŮ (SORTIMENT)
-        // n = Název, c = Běžná cena, s = O kolik zlevní v Happy Hour, k = Kategorie (dle 'id' z bodu 2), i = Ikonka (emoji)
         const SORTIMENT = [
             { n: "Slivovice", c: 50, s: 10, k: "Bar", i: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s" },
             { n: "Hruškovice", c: 50, s: 10, k: "Bar", i: "🥃" },
@@ -191,7 +188,6 @@
             { n: "Vstupné Student", c: 100, s: 0, k: "Vstup", i: "🎟️" }
         ];
 
-        // 4. FIREBASE KONFIGURACE (NEHRABAT!)
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
             authDomain: "chasapp-6767.firebaseapp.com",
@@ -221,7 +217,6 @@
 
         document.getElementById('loc-display').innerText = `Místo: ${locID}`;
 
-        // Generování tlačítek kategorií z nastavení
         const navContainer = document.getElementById('nav-container');
         KATEGORIE.forEach(kat => {
             const btn = document.createElement('button');
@@ -264,9 +259,14 @@
             grid.innerHTML = '';
             SORTIMENT.filter(p => filtr === 'vše' || p.k === filtr).forEach(p => {
                 const pc = isHappy ? (p.c - p.s) : p.c;
+                
+                // ROZPOZNÁNÍ OBRÁZKU VS EMOJI
+                const isImage = p.i.startsWith('http');
+                const mediaHtml = isImage ? `<img src="${p.i}" alt="${p.n}">` : `<span>${p.i}</span>`;
+
                 grid.innerHTML += `
                     <div class="product-card" onclick="add('${p.n}', ${pc})">
-                        <div class="product-icon">${p.i}</div>
+                        <div class="product-media">${mediaHtml}</div>
                         <div class="product-name">${p.n}</div>
                         <div class="product-price">${isHappy && p.s > 0 ? `<span class="old-price">${p.c}</span>`:''}${pc} Kč</div>
                     </div>`;
@@ -323,7 +323,6 @@
         function runStats() {
             let total = 0, count = historie.length;
             
-            // Dynamické vytvoření struktury pro počítání podle nastavení kategorií
             let cats = {};
             KATEGORIE.forEach(k => { cats[k.id] = { kc: 0, ks: 0, orders: 0 }; });
             
@@ -353,7 +352,6 @@
                     polozkyKusy.push(`<b>${pocetPolozky}x</b> ${n}`); 
                 });
 
-                // Přičtení k počtu objednávek pro danou kategorii
                 KATEGORIE.forEach(k => { if (hasCategory[k.id]) cats[k.id].orders++; });
 
                 log.innerHTML += `
@@ -364,12 +362,10 @@
                     </div>`;
             });
 
-            // Hlavní UI součty
             document.getElementById('st-total-kc').innerText = total + " Kč";
             document.getElementById('st-orders-count').innerText = count;
             document.getElementById('st-avg-order').innerText = count ? Math.round(total/count) + " Kč" : "0 Kč";
 
-            // Dynamické vytvoření cihel pro statistiky
             const catsContainer = document.getElementById('stats-categories-container');
             catsContainer.innerHTML = '';
             
@@ -383,12 +379,10 @@
                     </div>`;
             });
 
-            // Příprava dat pro grafy
             const labels = KATEGORIE.map(k => k.id);
             const dataKc = KATEGORIE.map(k => cats[k.id].kc);
             const colors = KATEGORIE.map(k => k.color);
 
-            // Vykreslení grafů
             if(chartPie) chartPie.destroy();
             if(chartBar) chartBar.destroy();
 
