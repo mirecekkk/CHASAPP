@@ -7,6 +7,9 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         :root {
@@ -53,7 +56,6 @@
         }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
         
-        /* NOVÉ STYLY PRO OBRÁZKY A EMOJI */
         .product-media { height: 90px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; }
         .product-media img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
         .product-media span { font-size: 3.5rem; }
@@ -152,6 +154,9 @@
             <div class="history-wrap">
                 <h3>Poslední pohyby</h3>
                 <div class="history-list" id="stats-log"></div>
+                
+                <button class="btn-archive" style="background: #3498db; margin-bottom: 10px;" onclick="stahnoutPDF()">📄 Stáhnout PDF report tržby a skladu</button>
+                
                 <button class="btn-archive" onclick="archiveData()">🗑️ Smazat a archivovat tržbu</button>
             </div>
         </div>
@@ -178,14 +183,15 @@
             { id: "Vstup",  btnText: "🎟️ Vstup",  color: "#3498db" }
         ];
 
+        // NOVÉ: Přidáno 'v' (objem/kusy) a 'sklad' (celkem na začátku) do SORTIMENTU
         const SORTIMENT = [
-            { n: "Slivovice", c: 50, s: 10, k: "Bar", i: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s" },
-            { n: "Hruškovice", c: 50, s: 10, k: "Bar", i: "🥃" },
-            { n: "Rum", c: 40, s: 5, k: "Bar", i: "🥃" },
-            { n: "Pivo 12°", c: 50, s: 10, k: "Výčep", i: "🍺" },
-            { n: "Pivo 10°", c: 40, s: 5, k: "Výčep", i: "🍺" },
-            { n: "Vstupné 18+", c: 200, s: 0, k: "Vstup", i: "🎟️" },
-            { n: "Vstupné pod 18", c: 100, s: 0, k: "Vstup", i: "🎟️" }
+            { n: "Slivovice", c: 50, s: 10, k: "Bar", i: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s", v: 0.04, sklad: 1.0 },
+            { n: "Hruškovice", c: 50, s: 10, k: "Bar", i: "🥃", v: 0.04, sklad: 1.5 },
+            { n: "Rum", c: 40, s: 5, k: "Bar", i: "🥃", v: 0.04, sklad: 2.0 },
+            { n: "Pivo 12°", c: 50, s: 10, k: "Výčep", i: "🍺", v: 0.5, sklad: 30.0 },
+            { n: "Pivo 10°", c: 40, s: 5, k: "Výčep", i: "🍺", v: 0.5, sklad: 50.0 },
+            { n: "Vstupné 18+", c: 200, s: 0, k: "Vstup", i: "🎟️", v: 1, sklad: 500 },
+            { n: "Vstupné pod 18", c: 100, s: 0, k: "Vstup", i: "🎟️", v: 1, sklad: 500 }
         ];
 
         const FIREBASE_CONFIG = {
@@ -254,20 +260,40 @@
             renderMenu();
         };
 
+        // NOVÉ: Kompletně přepsaný renderMenu, aby ukazoval sklad, zbytek logiky zachován
         window.renderMenu = () => {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
+            
+            // Spočítáme aktuální spotřebu ze všech dosavadních objednávek
+            let aktualniSpotreba = {};
+            historie.forEach(o => {
+                const polozky = o.data || o.polozky || {};
+                Object.entries(polozky).forEach(([n, d]) => {
+                    if (!aktualniSpotreba[n]) aktualniSpotreba[n] = 0;
+                    aktualniSpotreba[n] += (d.q || d.pocet || d.count || 1);
+                });
+            });
+
             SORTIMENT.filter(p => filtr === 'vše' || p.k === filtr).forEach(p => {
                 const pc = isHappy ? (p.c - p.s) : p.c;
-                
-                // ROZPOZNÁNÍ OBRÁZKU VS EMOJI
                 const isImage = p.i.startsWith('http');
                 const mediaHtml = isImage ? `<img src="${p.i}" alt="${p.n}">` : `<span>${p.i}</span>`;
+                
+                // Výpočet zbytku skladu
+                const prodanoKusu = aktualniSpotreba[p.n] || 0;
+                const spotrebovano = prodanoKusu * (p.v || 0);
+                const zbyvaNaSklade = (p.sklad || 0) - spotrebovano;
+                
+                // Varování, když dochází
+                const dochaziTrida = (zbyvaNaSklade <= ((p.sklad || 0) * 0.1)) ? 'color: var(--accent-danger); font-weight: bold;' : 'color: #888;';
+                const jednotka = p.k === "Vstup" ? "ks" : "l";
 
                 grid.innerHTML += `
                     <div class="product-card" onclick="add('${p.n}', ${pc})">
                         <div class="product-media">${mediaHtml}</div>
                         <div class="product-name">${p.n}</div>
+                        <div style="font-size: 0.8rem; ${dochaziTrida} margin-bottom: 5px;">Sklad: ${zbyvaNaSklade.toFixed(2)} ${jednotka}</div>
                         <div class="product-price">${isHappy && p.s > 0 ? `<span class="old-price">${p.c}</span>`:''}${pc} Kč</div>
                     </div>`;
             });
@@ -311,7 +337,11 @@
             }).then(() => { kosik = {}; updateCart(); });
         };
 
-        onValue(barRef, (s) => { historie = s.val() ? Object.values(s.val()) : []; });
+        // NOVÉ: Přidáno volání renderMenu() aby se sklad aktualizoval v reálném čase, i když pípne objednávku někdo jiný
+        onValue(barRef, (s) => { 
+            historie = s.val() ? Object.values(s.val()) : []; 
+            renderMenu(); 
+        });
 
         window.showStats = () => {
             document.getElementById('stats-modal').style.display = 'flex';
@@ -415,6 +445,63 @@
                     hideStats();
                 });
             }
+        };
+
+        // NOVÉ: Funkce pro vygenerování a stažení PDF
+        window.stahnoutPDF = () => {
+            if (historie.length === 0) return alert(TEXTY.chybaPrazdnaKasa);
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const bezDiakritiky = (text) => String(text).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            doc.setFontSize(18);
+            doc.text("Vecerni report trzby - CHASA VLKOV", 14, 20);
+            doc.setFontSize(11);
+            doc.text(`Cas exportu: ${new Date().toLocaleString()}`, 14, 28);
+
+            let celkemKc = 0;
+            let spotreba = {};
+
+            historie.forEach(o => {
+                celkemKc += (o.celkem || o.cenaCelkem || 0);
+                const polozky = o.data || o.polozky || {};
+                
+                Object.entries(polozky).forEach(([n, d]) => {
+                    const pocet = d.q || d.pocet || d.count || 1;
+                    const item = SORTIMENT.find(x => x.n === n);
+                    const objem = item ? (item.v || 0) : 0;
+                    
+                    if (!spotreba[n]) spotreba[n] = { ks: 0, litry: 0, pocatecniSklad: item ? item.sklad : 0 };
+                    spotreba[n].ks += pocet;
+                    spotreba[n].litry += (pocet * objem);
+                });
+            });
+
+            doc.text(`Celkova trzba: ${celkemKc} Kc`, 14, 36);
+
+            const tableData = [];
+            Object.entries(spotreba).forEach(([nazev, data]) => {
+                const zbyvaSklad = (data.pocatecniSklad - data.litry).toFixed(2);
+                const item = SORTIMENT.find(x => x.n === nazev);
+                let jednotka = (item && item.k === "Vstup") ? "ks" : "litru";
+                
+                tableData.push([
+                    bezDiakritiky(nazev), 
+                    data.ks.toString(), 
+                    data.litry.toFixed(2) + " " + jednotka,
+                    zbyvaSklad + " " + jednotka
+                ]);
+            });
+
+            doc.autoTable({
+                startY: 45,
+                head: [['Polozka', 'Prodano (porce/ks)', 'Spotrebovano celkem', 'Zbyva na sklade']],
+                body: tableData,
+            });
+
+            doc.save(`Trzba_Chasa_Vlkov_${new Date().toISOString().slice(0,10)}.pdf`);
         };
 
         renderMenu();
