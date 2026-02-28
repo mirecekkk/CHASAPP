@@ -156,7 +156,6 @@
                 <div class="history-list" id="stats-log"></div>
                 
                 <button class="btn-archive" style="background: #3498db; margin-bottom: 10px;" onclick="stahnoutPDF()">📄 Stáhnout PDF report tržby a skladu</button>
-                
                 <button class="btn-archive" onclick="archiveData()">🗑️ Smazat a archivovat tržbu</button>
             </div>
         </div>
@@ -183,7 +182,7 @@
             { id: "Vstup",  btnText: "🎟️ Vstup",  color: "#3498db" }
         ];
 
-        // NOVÉ: Přidáno 'v' (objem/kusy) a 'sklad' (celkem na začátku) do SORTIMENTU
+        // Sklad: 'v' je objem porce (nebo ks), 'sklad' je startovací zásoba
         const SORTIMENT = [
             { n: "Slivovice", c: 50, s: 10, k: "Bar", i: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s", v: 0.04, sklad: 1.0 },
             { n: "Hruškovice", c: 50, s: 10, k: "Bar", i: "🥃", v: 0.04, sklad: 1.5 },
@@ -260,12 +259,12 @@
             renderMenu();
         };
 
-        // NOVÉ: Kompletně přepsaný renderMenu, aby ukazoval sklad, zbytek logiky zachován
+        // VYKRESLENÍ MENU S HLÍDÁNÍM SKLADU A ZŠEDNUTÍM PŘI VYPRODÁNÍ
         window.renderMenu = () => {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
             
-            // Spočítáme aktuální spotřebu ze všech dosavadních objednávek
+            // Spočítáme aktuální spotřebu z historie
             let aktualniSpotreba = {};
             historie.forEach(o => {
                 const polozky = o.data || o.polozky || {};
@@ -280,26 +279,60 @@
                 const isImage = p.i.startsWith('http');
                 const mediaHtml = isImage ? `<img src="${p.i}" alt="${p.n}">` : `<span>${p.i}</span>`;
                 
-                // Výpočet zbytku skladu
-                const prodanoKusu = aktualniSpotreba[p.n] || 0;
+                // Započítáme i to, co už je aktuálně naklikáno v košíku!
+                const vKosikuKusu = kosik[p.n] ? kosik[p.n].q : 0;
+                const prodanoKusu = (aktualniSpotreba[p.n] || 0) + vKosikuKusu;
+                
                 const spotrebovano = prodanoKusu * (p.v || 0);
                 const zbyvaNaSklade = (p.sklad || 0) - spotrebovano;
                 
-                // Varování, když dochází
-                const dochaziTrida = (zbyvaNaSklade <= ((p.sklad || 0) * 0.1)) ? 'color: var(--accent-danger); font-weight: bold;' : 'color: #888;';
+                // Zjistíme, jestli máme dost na další porci
+                const muzuProdatDalsi = zbyvaNaSklade >= (p.v || 0);
+                
+                // Varování, když dochází nebo došlo
+                let dochaziTrida = 'color: #888;';
+                if (!muzuProdatDalsi) {
+                    dochaziTrida = 'color: var(--accent-danger); font-weight: bold; font-size: 0.9rem;';
+                } else if (zbyvaNaSklade <= ((p.sklad || 0) * 0.1)) {
+                    dochaziTrida = 'color: var(--accent-happy); font-weight: bold;';
+                }
+                
                 const jednotka = p.k === "Vstup" ? "ks" : "l";
+                const textSkladu = muzuProdatDalsi ? `Sklad: ${zbyvaNaSklade.toFixed(2)} ${jednotka}` : `VYPRODÁNO`;
+
+                // Přidáme styl pro zšednutí, pokud je vyprodáno
+                const kartaStyl = muzuProdatDalsi ? '' : 'opacity: 0.4; filter: grayscale(100%); cursor: not-allowed;';
+                
+                // Upravíme onclick, aby zablokoval kliknutí, když není na skladě
+                const onClickAkce = muzuProdatDalsi ? `onclick="add('${p.n}', ${pc})"` : `onclick="alert('Tato položka je už vyprodaná!')"`;
 
                 grid.innerHTML += `
-                    <div class="product-card" onclick="add('${p.n}', ${pc})">
+                    <div class="product-card" ${onClickAkce} style="${kartaStyl}">
                         <div class="product-media">${mediaHtml}</div>
                         <div class="product-name">${p.n}</div>
-                        <div style="font-size: 0.8rem; ${dochaziTrida} margin-bottom: 5px;">Sklad: ${zbyvaNaSklade.toFixed(2)} ${jednotka}</div>
+                        <div style="font-size: 0.8rem; ${dochaziTrida} margin-bottom: 5px;">${textSkladu}</div>
                         <div class="product-price">${isHappy && p.s > 0 ? `<span class="old-price">${p.c}</span>`:''}${pc} Kč</div>
                     </div>`;
             });
         };
 
+        // PŘIDÁNÍ DO KOŠÍKU S BEZPEČNOSTNÍ POJISTKOU
         window.add = (n, c) => {
+            // BEZPEČNOSTNÍ POJISTKA - Zjistíme, jestli přidáním nepřekročíme sklad
+            const item = SORTIMENT.find(x => x.n === n);
+            let aktualniSpotreba = 0;
+            historie.forEach(o => {
+                const polozky = o.data || o.polozky || {};
+                if (polozky[n]) aktualniSpotreba += (polozky[n].q || polozky[n].pocet || polozky[n].count || 1);
+            });
+            const vKosikuKusu = kosik[n] ? kosik[n].q : 0;
+            const spotrebovanoBudouci = (aktualniSpotreba + vKosikuKusu + 1) * (item.v || 0);
+            
+            // Pokud bychom dalším kliknutím překročili sklad, zastavíme to
+            if (spotrebovanoBudouci > (item.sklad || 0)) {
+                return alert(`Došlo! Na skladě už nezbývá dostatek pro další položku ${n}.`);
+            }
+
             if(kosik[n]) { kosik[n].q++; kosik[n].s += c; }
             else { kosik[n] = { q: 1, p: c, s: c }; }
             updateCart();
@@ -320,6 +353,9 @@
                 l.innerHTML += `<div class="cart-item"><span><strong>${d.q}x</strong> ${n}</span><span>${d.s} Kč <button onclick="remove('${n}')" style="border:none; color:red; font-size:1.2rem; cursor:pointer;">&times;</button></span></div>`;
             });
             document.getElementById('cart-total').innerText = `${t} Kč`;
+            
+            // Překreslí menu po každém kliknutí, abys hned viděl klesající sklad (a vrácení barvy při odebrání)
+            renderMenu();
         }
 
         window.finishOrder = () => {
@@ -337,7 +373,6 @@
             }).then(() => { kosik = {}; updateCart(); });
         };
 
-        // NOVÉ: Přidáno volání renderMenu() aby se sklad aktualizoval v reálném čase, i když pípne objednávku někdo jiný
         onValue(barRef, (s) => { 
             historie = s.val() ? Object.values(s.val()) : []; 
             renderMenu(); 
@@ -447,7 +482,6 @@
             }
         };
 
-        // NOVÉ: Funkce pro vygenerování a stažení PDF
         window.stahnoutPDF = () => {
             if (historie.length === 0) return alert(TEXTY.chybaPrazdnaKasa);
 
