@@ -161,6 +161,31 @@
         </div>
     </div>
 
+    <!-- NOVÉ OKNO PRO PLACENÍ -->
+    <div class="modal" id="pay-modal">
+        <div class="modal-content" style="max-width: 450px; height: auto; text-align: center; border-radius: 25px; padding: 30px;">
+            <h2 style="margin-top: 0;">Vyúčtování</h2>
+            
+            <div style="font-size: 1.2rem; color: #666; margin-bottom: 5px;">Celkem k platbě</div>
+            <div id="pay-total-display" style="font-size: 3rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 25px;">0 Kč</div>
+            
+            <div style="margin-bottom: 25px; text-align: left;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #555;">Zákazník dává (Kč):</label>
+                <input type="number" id="pay-input" oninput="calculateReturn()" style="width: 100%; padding: 15px; font-size: 1.8rem; text-align: center; border-radius: 12px; border: 2px solid #ddd; outline: none; transition: 0.3s;" placeholder="0">
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 25px;">
+                <div style="font-size: 1.1rem; font-weight: 600; color: #666;">Vrátit zákazníkovi:</div>
+                <div id="pay-return-display" style="font-size: 2.2rem; font-weight: 800; color: var(--accent-success); margin-top: 5px;">0 Kč</div>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-archive" style="flex: 1; background: #aaa;" onclick="closePayModal()">Zrušit</button>
+                <button class="btn-pay" style="flex: 1; margin-top: 0;" onclick="confirmPayment()">HOTOVO</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -219,6 +244,7 @@
         let historie = [];
         let chartPie = null, chartBar = null;
         let locID = localStorage.getItem('loc_id') || 'Bar';
+        let aktualniKPlatbe = 0; // Pomocná proměnná pro nové platební okno
 
         document.getElementById('loc-display').innerText = `Místo: ${locID}`;
 
@@ -358,19 +384,78 @@
             renderMenu();
         }
 
+        // =====================================================================
+        // NOVÁ LOGIKA PLACENÍ V PĚKNÉM OKNĚ
+        // =====================================================================
         window.finishOrder = () => {
             const t = parseInt(document.getElementById('cart-total').innerText);
             if(t === 0) return;
+            
+            aktualniKPlatbe = t;
+            document.getElementById('pay-total-display').innerText = t + " Kč";
+            document.getElementById('pay-input').value = ""; // Vynulovat políčko
+            document.getElementById('pay-input').style.borderColor = "#ddd";
+            document.getElementById('pay-return-display').innerText = "0 Kč";
+            document.getElementById('pay-return-display').style.color = "var(--accent-success)";
+            
+            // Zobrazíme okno
+            document.getElementById('pay-modal').style.display = 'flex';
+            
+            // Automaticky zaměříme kurzor do políčka
+            setTimeout(() => document.getElementById('pay-input').focus(), 100);
+        };
+
+        window.closePayModal = () => {
+            document.getElementById('pay-modal').style.display = 'none';
+        };
+
+        window.calculateReturn = () => {
+            const inputVal = parseInt(document.getElementById('pay-input').value) || 0;
+            const diff = inputVal - aktualniKPlatbe;
+            const returnDisplay = document.getElementById('pay-return-display');
+            const inputField = document.getElementById('pay-input');
+            
+            if (diff >= 0 && inputVal > 0) {
+                returnDisplay.innerText = diff + " Kč";
+                returnDisplay.style.color = "var(--accent-success)";
+                inputField.style.borderColor = "var(--accent-success)";
+            } else if (inputVal > 0) {
+                returnDisplay.innerText = "Málo peněz!";
+                returnDisplay.style.color = "var(--accent-danger)";
+                inputField.style.borderColor = "var(--accent-danger)";
+            } else {
+                returnDisplay.innerText = "0 Kč";
+                returnDisplay.style.color = "var(--accent-success)";
+                inputField.style.borderColor = "#ddd";
+            }
+        };
+
+        window.confirmPayment = () => {
+            const inputVal = parseInt(document.getElementById('pay-input').value);
+            
+            // Kontrola jestli zaplatil dost
+            if (isNaN(inputVal) || inputVal < aktualniKPlatbe) {
+                document.getElementById('pay-return-display').innerText = "CHYBÍ PENÍZE!";
+                document.getElementById('pay-return-display').style.color = "var(--accent-danger)";
+                document.getElementById('pay-input').style.borderColor = "var(--accent-danger)";
+                return;
+            }
+
+            // Uložení objednávky do Firebase (původní kód)
             push(barRef, {
                 ts: Date.now(),
                 cas: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
                 data: {...kosik},       
                 polozky: {...kosik},    
-                celkem: t,              
-                cenaCelkem: t,          
+                celkem: aktualniKPlatbe,              
+                cenaCelkem: aktualniKPlatbe,          
                 isHH: isHappy,
                 misto: locID
-            }).then(() => { kosik = {}; updateCart(); });
+            }).then(() => { 
+                kosik = {}; 
+                updateCart(); 
+                closePayModal(); 
+            });
         };
 
         onValue(barRef, (s) => { 
