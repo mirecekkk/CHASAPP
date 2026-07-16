@@ -67,6 +67,7 @@
         .cart-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .cart-list { flex: 1; overflow-y: auto; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 12px; margin-bottom: 8px; }
+        
         .cart-total-box { background: #f3f3f3; padding: 25px; border-radius: 20px; text-align: center; margin-top: 20px; }
         .btn-pay { width: 100%; padding: 18px; border: none; border-radius: 15px; background: var(--accent-success); color: white; font-weight: 700; font-size: 1.2rem; cursor: pointer; }
 
@@ -87,6 +88,10 @@
         .history-list { max-height: 250px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; }
         .btn-archive { width: 100%; padding: 15px; border: none; border-radius: 15px; background: var(--accent-danger); color: white; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
         .btn-archive:hover { opacity: 0.9; }
+
+        /* Styly pro numpad */
+        .btn-num { background: #f0f0f0; border: none; border-radius: 12px; padding: 15px; font-size: 1.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+        .btn-num:active { background: #ddd; transform: scale(0.95); }
 
         @media (max-width: 1000px) {
             body { flex-direction: column; overflow: auto; }
@@ -120,6 +125,15 @@
         <div class="cart-list" id="cart-list"></div>
         <div class="cart-total-box">
             <div id="cart-total" style="font-size: 2.8rem; font-weight: 800; margin-bottom: 15px;">0 Kč</div>
+            
+            <!-- CHECKBOX PRO KALKULAČKU -->
+            <div style="text-align: left; margin-bottom: 15px; background: #e9ecef; padding: 12px; border-radius: 12px;">
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; color: #444; user-select: none;">
+                    <input type="checkbox" id="use-calculator" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent-primary);">
+                    Zobrazit kalkulačku vrácení
+                </label>
+            </div>
+
             <button class="btn-pay" onclick="finishOrder()">ZAPLATIT</button>
         </div>
     </aside>
@@ -161,27 +175,55 @@
         </div>
     </div>
 
-    <!-- NOVÉ OKNO PRO PLACENÍ -->
+    <!-- OKNO PRO PLACENÍ S NUMPADEM VEDLE -->
     <div class="modal" id="pay-modal">
-        <div class="modal-content" style="max-width: 450px; height: auto; text-align: center; border-radius: 25px; padding: 30px;">
-            <h2 style="margin-top: 0;">Vyúčtování</h2>
+        <div class="modal-content" style="max-width: 800px; height: auto; border-radius: 25px; padding: 35px;">
+            <h2 style="margin-top: 0; font-size: 1.8rem; text-align: center; margin-bottom: 25px; color: var(--accent-primary);">Vyúčtování</h2>
             
-            <div style="font-size: 1.2rem; color: #666; margin-bottom: 5px;">Celkem k platbě</div>
-            <div id="pay-total-display" style="font-size: 3rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 25px;">0 Kč</div>
-            
-            <div style="margin-bottom: 25px; text-align: left;">
-                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #555;">Zákazník dává (Kč):</label>
-                <input type="number" id="pay-input" oninput="calculateReturn()" style="width: 100%; padding: 15px; font-size: 1.8rem; text-align: center; border-radius: 12px; border: 2px solid #ddd; outline: none; transition: 0.3s;" placeholder="0">
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 25px;">
-                <div style="font-size: 1.1rem; font-weight: 600; color: #666;">Vrátit zákazníkovi:</div>
-                <div id="pay-return-display" style="font-size: 2.2rem; font-weight: 800; color: var(--accent-success); margin-top: 5px;">0 Kč</div>
-            </div>
-            
-            <div style="display: flex; gap: 15px;">
-                <button class="btn-archive" style="flex: 1; background: #aaa;" onclick="closePayModal()">Zrušit</button>
-                <button class="btn-pay" style="flex: 1; margin-top: 0;" onclick="confirmPayment()">HOTOVO</button>
+            <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                
+                <!-- LEVÁ ČÁST: Informace a tlačítka -->
+                <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
+                    <div style="font-size: 1.1rem; color: #666; margin-bottom: 5px;">Celkem k platbě</div>
+                    <div id="pay-total-display" style="font-size: 3.5rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 20px; line-height: 1;">0 Kč</div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #555;">Zákazník dává (Kč):</label>
+                        <input type="text" id="pay-input" readonly style="width: 100%; padding: 18px; font-size: 2.2rem; font-weight: 700; text-align: center; border-radius: 12px; border: 2px solid #ddd; outline: none; background: #fff; color: var(--text-main);" placeholder="0">
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #666;">Vrátit zákazníkovi:</div>
+                        <div id="pay-return-display" style="font-size: 2.8rem; font-weight: 800; color: var(--accent-success); margin-top: 5px;">0 Kč</div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn-archive" style="flex: 1; background: #aaa; padding: 18px;" onclick="closePayModal()">Zrušit</button>
+                        <button class="btn-pay" style="flex: 1; margin-top: 0; padding: 18px;" onclick="confirmPayment()">HOTOVO</button>
+                    </div>
+                </div>
+
+                <!-- PRAVÁ ČÁST: Numpad -->
+                <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px; height: 100%; min-height: 350px;">
+                        <button class="btn-num" onclick="numpadPress('7')">7</button>
+                        <button class="btn-num" onclick="numpadPress('8')">8</button>
+                        <button class="btn-num" onclick="numpadPress('9')">9</button>
+                        
+                        <button class="btn-num" onclick="numpadPress('4')">4</button>
+                        <button class="btn-num" onclick="numpadPress('5')">5</button>
+                        <button class="btn-num" onclick="numpadPress('6')">6</button>
+                        
+                        <button class="btn-num" onclick="numpadPress('1')">1</button>
+                        <button class="btn-num" onclick="numpadPress('2')">2</button>
+                        <button class="btn-num" onclick="numpadPress('3')">3</button>
+                        
+                        <button class="btn-num" onclick="numpadPress('back')" style="color: var(--accent-danger);">⌫</button>
+                        <button class="btn-num" onclick="numpadPress('0')">0</button>
+                        <button class="btn-num" onclick="numpadPress('00')">00</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -244,7 +286,7 @@
         let historie = [];
         let chartPie = null, chartBar = null;
         let locID = localStorage.getItem('loc_id') || 'Bar';
-        let aktualniKPlatbe = 0; // Pomocná proměnná pro nové platební okno
+        let aktualniKPlatbe = 0; // Pomocná proměnná pro platební okno
 
         document.getElementById('loc-display').innerText = `Místo: ${locID}`;
 
@@ -285,12 +327,11 @@
             renderMenu();
         };
 
-        // VYKRESLENÍ MENU S HLÍDÁNÍM SKLADU A ZŠEDNUTÍM PŘI VYPRODÁNÍ
+        // VYKRESLENÍ MENU S HLÍDÁNÍM SKLADU
         window.renderMenu = () => {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
             
-            // Spočítáme aktuální spotřebu z historie
             let aktualniSpotreba = {};
             historie.forEach(o => {
                 const polozky = o.data || o.polozky || {};
@@ -305,17 +346,14 @@
                 const isImage = p.i.startsWith('http');
                 const mediaHtml = isImage ? `<img src="${p.i}" alt="${p.n}">` : `<span>${p.i}</span>`;
                 
-                // Započítáme i to, co už je aktuálně naklikáno v košíku!
                 const vKosikuKusu = kosik[p.n] ? kosik[p.n].q : 0;
                 const prodanoKusu = (aktualniSpotreba[p.n] || 0) + vKosikuKusu;
                 
                 const spotrebovano = prodanoKusu * (p.v || 0);
                 const zbyvaNaSklade = (p.sklad || 0) - spotrebovano;
                 
-                // Zjistíme, jestli máme dost na další porci
                 const muzuProdatDalsi = zbyvaNaSklade >= (p.v || 0);
                 
-                // Varování, když dochází nebo došlo
                 let dochaziTrida = 'color: #888;';
                 if (!muzuProdatDalsi) {
                     dochaziTrida = 'color: var(--accent-danger); font-weight: bold; font-size: 0.9rem;';
@@ -326,10 +364,7 @@
                 const jednotka = p.k === "Vstup" ? "ks" : "l";
                 const textSkladu = muzuProdatDalsi ? `Sklad: ${zbyvaNaSklade.toFixed(2)} ${jednotka}` : `VYPRODÁNO`;
 
-                // Přidáme styl pro zšednutí, pokud je vyprodáno
                 const kartaStyl = muzuProdatDalsi ? '' : 'opacity: 0.4; filter: grayscale(100%); cursor: not-allowed;';
-                
-                // Upravíme onclick, aby zablokoval kliknutí, když není na skladě
                 const onClickAkce = muzuProdatDalsi ? `onclick="add('${p.n}', ${pc})"` : `onclick="alert('Tato položka je už vyprodaná!')"`;
 
                 grid.innerHTML += `
@@ -342,9 +377,7 @@
             });
         };
 
-        // PŘIDÁNÍ DO KOŠÍKU S BEZPEČNOSTNÍ POJISTKOU
         window.add = (n, c) => {
-            // BEZPEČNOSTNÍ POJISTKA - Zjistíme, jestli přidáním nepřekročíme sklad
             const item = SORTIMENT.find(x => x.n === n);
             let aktualniSpotreba = 0;
             historie.forEach(o => {
@@ -354,7 +387,6 @@
             const vKosikuKusu = kosik[n] ? kosik[n].q : 0;
             const spotrebovanoBudouci = (aktualniSpotreba + vKosikuKusu + 1) * (item.v || 0);
             
-            // Pokud bychom dalším kliknutím překročili sklad, zastavíme to
             if (spotrebovanoBudouci > (item.sklad || 0)) {
                 return alert(`Došlo! Na skladě už nezbývá dostatek pro další položku ${n}.`);
             }
@@ -379,34 +411,59 @@
                 l.innerHTML += `<div class="cart-item"><span><strong>${d.q}x</strong> ${n}</span><span>${d.s} Kč <button onclick="remove('${n}')" style="border:none; color:red; font-size:1.2rem; cursor:pointer;">&times;</button></span></div>`;
             });
             document.getElementById('cart-total').innerText = `${t} Kč`;
-            
-            // Překreslí menu po každém kliknutí, abys hned viděl klesající sklad (a vrácení barvy při odebrání)
             renderMenu();
         }
 
         // =====================================================================
-        // NOVÁ LOGIKA PLACENÍ V PĚKNÉM OKNĚ
+        // LOGIKA PLACENÍ S CHECKBOXEM
         // =====================================================================
         window.finishOrder = () => {
             const t = parseInt(document.getElementById('cart-total').innerText);
             if(t === 0) return;
             
             aktualniKPlatbe = t;
-            document.getElementById('pay-total-display').innerText = t + " Kč";
-            document.getElementById('pay-input').value = ""; // Vynulovat políčko
-            document.getElementById('pay-input').style.borderColor = "#ddd";
-            document.getElementById('pay-return-display').innerText = "0 Kč";
-            document.getElementById('pay-return-display').style.color = "var(--accent-success)";
             
-            // Zobrazíme okno
-            document.getElementById('pay-modal').style.display = 'flex';
+            // Zjištění, jestli je checkbox zaškrtnutý
+            const useCalculator = document.getElementById('use-calculator').checked;
             
-            // Automaticky zaměříme kurzor do políčka
-            setTimeout(() => document.getElementById('pay-input').focus(), 100);
+            if (useCalculator) {
+                // Zobrazit okno s numpadem
+                document.getElementById('pay-total-display').innerText = t + " Kč";
+                document.getElementById('pay-input').value = "";
+                document.getElementById('pay-input').style.borderColor = "#ddd";
+                document.getElementById('pay-return-display').innerText = "0 Kč";
+                document.getElementById('pay-return-display').style.color = "var(--accent-success)";
+                
+                document.getElementById('pay-modal').style.display = 'flex';
+            } else {
+                // Hned uložit a vymazat košík (původní rychlé chování)
+                processPayment();
+            }
         };
 
         window.closePayModal = () => {
             document.getElementById('pay-modal').style.display = 'none';
+        };
+
+        // Obsluha klikání na virtuální číselník
+        window.numpadPress = (val) => {
+            const inputField = document.getElementById('pay-input');
+            
+            if (val === 'back') {
+                inputField.value = inputField.value.slice(0, -1);
+            } else {
+                if (inputField.value === "0" || inputField.value === "") {
+                    if (val === '00' && inputField.value === "") {
+                        inputField.value = "0";
+                    } else {
+                        inputField.value = val;
+                    }
+                } else {
+                    inputField.value += val;
+                }
+            }
+            
+            calculateReturn();
         };
 
         window.calculateReturn = () => {
@@ -433,7 +490,6 @@
         window.confirmPayment = () => {
             const inputVal = parseInt(document.getElementById('pay-input').value);
             
-            // Kontrola jestli zaplatil dost
             if (isNaN(inputVal) || inputVal < aktualniKPlatbe) {
                 document.getElementById('pay-return-display').innerText = "CHYBÍ PENÍZE!";
                 document.getElementById('pay-return-display').style.color = "var(--accent-danger)";
@@ -441,7 +497,11 @@
                 return;
             }
 
-            // Uložení objednávky do Firebase (původní kód)
+            processPayment();
+        };
+
+        // Společná funkce pro zapsání do databáze (aby se kód neopakoval)
+        function processPayment() {
             push(barRef, {
                 ts: Date.now(),
                 cas: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
@@ -456,7 +516,7 @@
                 updateCart(); 
                 closePayModal(); 
             });
-        };
+        }
 
         onValue(barRef, (s) => { 
             historie = s.val() ? Object.values(s.val()) : []; 
