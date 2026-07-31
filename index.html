@@ -477,7 +477,7 @@
             document.body.classList.toggle('happy-mode', isHappy);
             clearInterval(timerId);
             if(isHappy) {
-                happyEnd = Date.now() + (2.5 * 60 * 60 * 1000);
+                happyEnd = Date.now() + (3.0 * 60 * 60 * 1000);
                 timerId = setInterval(() => {
                     const d = happyEnd - Date.now();
                     if(d <= 0) { triggerHappy(); return; }
