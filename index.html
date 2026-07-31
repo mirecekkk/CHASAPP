@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CHASA VLKOV - PROFESIONÁLNÍ BAROVÝ SYSTÉM</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,16 +26,20 @@
 
         body.happy-mode { --bg-body: #fff4e6; --accent-primary: #e65100; }
 
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
         body { 
             margin: 0; 
-            height: 100vh; 
+            height: 100vh;
+            height: 100dvh;
             display: flex; 
             background: var(--bg-body); 
             transition: all 0.5s ease; 
             overflow: hidden; 
-            -webkit-overflow-scrolling: touch; 
         }
 
         .main-view { 
@@ -44,7 +48,8 @@
             flex-direction: column; 
             padding: 25px; 
             overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
         }
         
         .sidebar { 
@@ -75,31 +80,34 @@
         .btn-nav { border: none; padding: 10px 18px; border-radius: 12px; background: #f3f3f3; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .btn-nav.active { background: var(--accent-primary); color: white; }
 
-        .top-right-controls { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .happy-box { display: flex; align-items: center; gap: 15px; border-left: 2px solid #eee; padding-left: 20px; }
+        .happy-box { display: flex; align-items: center; gap: 10px; border-left: 2px solid #eee; padding-left: 15px; flex-wrap: wrap; }
         #timer-text { font-family: monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent-happy); display: none; }
         body.happy-mode #timer-text { display: block; }
         .btn-happy { background: var(--accent-happy); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
         .btn-fullscreen {
-            background: #2c3e50;
-            color: white;
+            background: #e2d2f0;
+            color: var(--accent-primary);
             border: none;
-            padding: 10px 18px;
+            padding: 10px 15px;
             border-radius: 12px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
         }
-        .btn-fullscreen:hover { background: #1a252f; }
+        .btn-fullscreen:active { transform: scale(0.95); }
 
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
         .product-card {
             background: var(--bg-card); border-radius: var(--radius); padding: 20px; text-align: center;
             box-shadow: var(--shadow); cursor: pointer; transition: 0.3s; border: 2px solid transparent;
             display: flex; flex-direction: column; height: 230px;
         }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
+        .product-card:active { transform: scale(0.97); }
+        .product-card:hover { border-color: var(--accent-primary); }
         
         .product-media { height: 90px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; }
         .product-media img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
@@ -110,7 +118,12 @@
         .old-price { text-decoration: line-through; font-size: 0.9rem; color: #999; margin-right: 5px; }
 
         .cart-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .cart-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .cart-list { 
+            flex: 1; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; 
+            touch-action: pan-y;
+        }
         .cart-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 12px; margin-bottom: 8px; }
         
         .cart-total-box { background: #f3f3f3; padding: 25px; border-radius: 20px; text-align: center; margin-top: 20px; }
@@ -126,6 +139,7 @@
             padding: 40px; 
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch; 
+            touch-action: pan-y;
             position: relative; 
         }
         
@@ -154,33 +168,18 @@
         .close-cart-btn { display: none; background: none; border: none; font-size: 2.2rem; cursor: pointer; color: #aaa; line-height: 1; padding: 0; margin-left: 10px; }
 
         @media (max-width: 1000px) {
-            body { 
-                flex-direction: column; 
-                overflow-y: auto; 
-                height: 100%; 
-                min-height: 100vh; 
-            }
-            
+            body { flex-direction: column; overflow: hidden; }
             .main-view { 
-                padding-bottom: 110px; 
-                overflow-y: visible; 
-                height: auto; 
-                flex: none; 
-            }
+                padding-bottom: 100px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            } 
             
             .sidebar { 
-                position: fixed; 
-                top: auto; 
-                bottom: 0; 
-                left: 0; 
-                width: 100%; 
-                height: 85vh; 
-                border-radius: 25px 25px 0 0; 
-                border-top: 1px solid #eee;
-                transform: translateY(100%); 
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 100; 
-                background: var(--bg-card);
+                position: fixed; top: auto; bottom: 0; left: 0; width: 100%; height: 85dvh; 
+                border-radius: 25px 25px 0 0; border-top: 1px solid #eee;
+                transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 100; background: var(--bg-card);
                 box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
             }
             .sidebar.open { transform: translateY(0); }
@@ -201,12 +200,6 @@
             
             .cart-title { flex-wrap: wrap; gap: 10px; }
             .cart-title h2 { flex-grow: 1; }
-            
-            .modal-content {
-                width: 98%;
-                max-height: 95vh;
-                padding: 25px;
-            }
         }
     </style>
 </head>
@@ -218,12 +211,10 @@
                 <button class="btn-nav active" onclick="setFilter('vše', this)">Vše</button>
             </div>
             
-            <div class="top-right-controls">
-                <button class="btn-fullscreen" id="btn-fullscreen" onclick="toggleFullscreen()">⛶ Fullscreen</button>
-                <div class="happy-box">
-                    <div id="timer-text">02:30:00</div>
-                    <button class="btn-happy" onclick="triggerHappy()">⚡ HAPPY HOUR</button>
-                </div>
+            <div class="happy-box">
+                <button class="btn-fullscreen" onclick="toggleFullscreen()" title="Celá obrazovka">⛶ Fullscreen</button>
+                <div id="timer-text">02:30:00</div>
+                <button class="btn-happy" onclick="triggerHappy()">⚡ HAPPY HOUR</button>
             </div>
         </header>
         <div class="product-grid" id="product-grid"></div>
@@ -368,7 +359,7 @@
         import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // =====================================================================
-        //   HLAVNÍ NASTAVENÍ APLIKACE (PŘEPISOVAT JENOM TOTO!) 
+        //   HLAVNÍ NASTAVENÍ APLIKACE
         // =====================================================================
 
         const TEXTY = {
@@ -384,7 +375,6 @@
             { id: "Vstup",  btnText: "🎟️ Vstup",  color: "#3498db" }
         ];
 
-        // Sklad: 'v' je objem porce (nebo ks), 'sklad' je startovací zásoba
         const SORTIMENT = [
             { n: "Slivovice", c: 50, s: 10, k: "Bar", i: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s", v: 0.04, sklad: 1.0 },
             { n: "Hruškovice", c: 50, s: 10, k: "Bar", i: "🥃", v: 0.04, sklad: 1.5 },
@@ -405,10 +395,6 @@
             appId: "1:43938163594:web:c93eca87f35d47c4eff673"
         };
 
-        // =====================================================================
-        // KONEC! DÁL JE TO AUTOMATICKY!
-        // =====================================================================
-
         const app = initializeApp(FIREBASE_CONFIG);
         const db = getDatabase(app);
         const barRef = ref(db, 'bar_data/historie');
@@ -425,451 +411,8 @@
 
         document.getElementById('loc-display-settings').innerText = `📍 ${locID}`;
 
-        const navContainer = document.getElementById('nav-container');
-        KATEGORIE.forEach(kat => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-nav';
-            btn.innerText = kat.btnText;
-            btn.onclick = function() { setFilter(kat.id, this); };
-            navContainer.appendChild(btn);
-        });
-
-        // Ovládání režimu celé obrazovky (Fullscreen)
+        // Správné propojení Fullscreen režimu
         window.toggleFullscreen = () => {
-            const btn = document.getElementById('btn-fullscreen');
-            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) { /* Safari */
-                    elem.webkitRequestFullscreen();
-                Problém se scrollováním na dotykových zařízeních u tohoto typu layoutu způsobují hlavně **dvě věci ve stylopisu CSS**:
-1. Flex kontejner (`body`) s `height: 100vh` a nastaveným `overflow: hidden`, který na mobilních prohlížečích blokuje nativní rolování kvůli dynamické výšce adresního řádku.
-2. Chybějící vlastnost `-webkit-overflow-scrolling: touch;`, která na iOS a Androidu zapíná plynulé posouvání uvnitř scrollovaných bloků (`.main-view`, `.cart-list`, `.modal-content`).
-
- Níže najdeš **kompletně opravený kód**, do kterého jsem integroval:
-* Opravu rolování na dotykových obrazovkách (s využitím moderní jednotky `100dvh` pro správnou výšku na mobilech).
-* **Nové tlačítko FULLSCREEN (⛶)** přímo v horní liště, které po kliknutí přepne aplikaci do režimu celé obrazovky (na mobilu i tabletu skryje lišty prohlížeče).
-
-```html
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CHASA VLKOV - PROFESIONÁLNÍ BAROVÝ SYSTÉM</title>
-
-    <link href="[https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap)" rel="stylesheet">
-    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
-    
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js](https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js](https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js)"></script>
-
-    <style>
-        :root {
-            --bg-body: #f0e6ff;
-            --bg-card: #ffffff;
-            --text-main: #2c2c2c;
-            --accent-primary: #400356;   
-            --accent-happy: #ff9800;     
-            --accent-success: #2ecc71;
-            --accent-danger: #e74c3c;
-            --shadow: 0 8px 30px rgba(0,0,0,0.1);
-            --radius: 18px;
-        }
-
-        body.happy-mode { --bg-body: #fff4e6; --accent-primary: #e65100; }
-
-        * { 
-            box-sizing: border-box; 
-            font-family: 'Poppins', sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
-        }
-        
-        body { 
-            margin: 0; 
-            height: 100vh;
-            height: 100dvh; /* Oprava výšky na mobilech */
-            display: flex; 
-            background: var(--bg-body); 
-            transition: all 0.5s ease; 
-            overflow: hidden; 
-        }
-
-        /* Přidáno -webkit-overflow-scrolling: touch pro plynulé rolování na iOS/tabletech */
-        .main-view { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            padding: 25px; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
-            touch-action: pan-y;
-        }
-        
-        .sidebar { 
-            width: 420px; 
-            background: var(--bg-card); 
-            border-left: 1px solid #eee; 
-            display: flex; 
-            flex-direction: column; 
-            padding: 25px; 
-            box-shadow: -5px 0 20px rgba(0,0,0,0.02); 
-            z-index: 10; 
-        }
-
-        .top-bar {
-            background: var(--bg-card); 
-            padding: 15px 25px; 
-            border-radius: var(--radius);
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            box-shadow: var(--shadow); 
-            margin-bottom: 25px; 
-            gap: 15px; 
-            flex-wrap: wrap;
-        }
-
-        .category-nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .btn-nav { border: none; padding: 10px 18px; border-radius: 12px; background: #f3f3f3; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-nav.active { background: var(--accent-primary); color: white; }
-
-        .happy-box { display: flex; align-items: center; gap: 10px; border-left: 2px solid #eee; padding-left: 15px; flex-wrap: wrap; }
-        #timer-text { font-family: monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent-happy); display: none; }
-        body.happy-mode #timer-text { display: block; }
-        .btn-happy { background: var(--accent-happy); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
-
-        /* Tlačítko Fullscreen */
-        .btn-fullscreen {
-            background: #e2d2f0;
-            color: var(--accent-primary);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.2s;
-        }
-        .btn-fullscreen:active { transform: scale(0.95); }
-
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
-        .product-card {
-            background: var(--bg-card); border-radius: var(--radius); padding: 20px; text-align: center;
-            box-shadow: var(--shadow); cursor: pointer; transition: 0.3s; border: 2px solid transparent;
-            display: flex; flex-direction: column; height: 230px;
-        }
-        .product-card:active { transform: scale(0.97); }
-        .product-card:hover { border-color: var(--accent-primary); }
-        
-        .product-media { height: 90px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; }
-        .product-media img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
-        .product-media span { font-size: 3.5rem; }
-        
-        .product-name { font-weight: 600; margin: 10px 0; font-size: 1rem; flex-grow: 1; }
-        .product-price { font-weight: 700; font-size: 1.3rem; color: var(--accent-primary); }
-        .old-price { text-decoration: line-through; font-size: 0.9rem; color: #999; margin-right: 5px; }
-
-        .cart-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .cart-list { 
-            flex: 1; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            touch-action: pan-y;
-        }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 12px; margin-bottom: 8px; }
-        
-        .cart-total-box { background: #f3f3f3; padding: 25px; border-radius: 20px; text-align: center; margin-top: 20px; }
-        .btn-pay { width: 100%; padding: 18px; border: none; border-radius: 15px; background: var(--accent-success); color: white; font-weight: 700; font-size: 1.2rem; cursor: pointer; }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .modal-content { 
-            background: white; 
-            width: 95%; 
-            max-width: 900px; 
-            max-height: 90vh; 
-            border-radius: 30px; 
-            padding: 40px; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            touch-action: pan-y;
-            position: relative; 
-        }
-        
-        /* Dashboard Stats */
-        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
-        .chart-container { background: #fdfdfd; padding: 15px; border-radius: 15px; border: 1px solid #eee; height: 250px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-brick { padding: 20px; border-radius: 15px; text-align: center; background: #f9f9f9; border: 1px solid #eee; }
-        .stat-brick.main { background: var(--accent-primary); color: white; }
-        .stat-brick.main strong { color: white !important; }
-        .stat-brick strong { display: block; font-size: 1.4rem; color: var(--accent-primary); margin: 5px 0; }
-        .stat-brick small { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; opacity: 0.8; }
-        .stat-detail { font-size: 0.85rem; color: #666; font-weight: 600; margin-top: 5px; }
-
-        .history-wrap { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-        .history-list { max-height: 250px; overflow-y: auto; -webkit-overflow-scrolling: touch; margin-bottom: 20px; padding-right: 10px; }
-        .btn-archive { width: 100%; padding: 15px; border: none; border-radius: 15px; background: var(--accent-danger); color: white; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
-        .btn-archive:hover { opacity: 0.9; }
-
-        /* Styly pro numpad */
-        .btn-num { background: #f0f0f0; border: none; border-radius: 12px; padding: 15px; font-size: 1.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main); }
-        .btn-num:active { background: #ddd; transform: scale(0.95); }
-
-        /* --- MOBILNÍ OPTIMALIZACE --- */
-        .mobile-cart-btn { display: none; }
-        .close-cart-btn { display: none; background: none; border: none; font-size: 2.2rem; cursor: pointer; color: #aaa; line-height: 1; padding: 0; margin-left: 10px; }
-
-        @media (max-width: 1000px) {
-            body { flex-direction: column; overflow: hidden; }
-            .main-view { 
-                padding-bottom: 100px; /* Místo pro plovoucí tlačítko na mobilu */
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            } 
-            
-            .sidebar { 
-                position: fixed; top: auto; bottom: 0; left: 0; width: 100%; height: 85dvh; 
-                border-radius: 25px 25px 0 0; border-top: 1px solid #eee;
-                transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 100; background: var(--bg-card);
-                box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
-            }
-            .sidebar.open { transform: translateY(0); }
-            
-            /* Plovoucí tlačítko košíku */
-            .mobile-cart-btn { 
-                display: flex; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-                background: var(--accent-primary); color: white; border: none; padding: 18px 30px; 
-                border-radius: 30px; font-size: 1.2rem; font-weight: 700; 
-                box-shadow: 0 5px 25px rgba(64, 3, 86, 0.4); z-index: 90; cursor: pointer; 
-                align-items: center; gap: 10px; width: 90%; justify-content: center;
-                transition: transform 0.2s;
-            }
-            .mobile-cart-btn:active { transform: translateX(-50%) scale(0.97); }
-            
-            .close-cart-btn { display: block; }
-            .happy-box { border-left: none; padding-left: 0; }
-            .charts-row { grid-template-columns: 1fr; }
-            
-            .cart-title { flex-wrap: wrap; gap: 10px; }
-            .cart-title h2 { flex-grow: 1; }
-        }
-    </style>
-</head>
-<body>
-
-    <main class="main-view">
-        <header class="top-bar">
-            <div class="category-nav" id="nav-container">
-                <button class="btn-nav active" onclick="setFilter('vše', this)">Vše</button>
-            </div>
-            
-            <div class="happy-box">
-                <button class="btn-fullscreen" onclick="toggleFullScreen()" title="Celá obrazovka">⛶ Fullscreen</button>
-                <div id="timer-text">02:30:00</div>
-                <button class="btn-happy" onclick="triggerHappy()">⚡ HAPPY HOUR</button>
-            </div>
-        </header>
-        <div class="product-grid" id="product-grid"></div>
-    </main>
-
-    <!-- PLOVOUCÍ TLAČÍTKO PRO MOBILY -->
-    <button class="mobile-cart-btn" onclick="toggleMobileCart()">
-        🛒 Zobrazit košík • <span id="mobile-cart-total">0 Kč</span>
-    </button>
-
-    <aside class="sidebar">
-        <div class="cart-title">
-            <h2 style="margin:0;">Košík</h2>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <button class="btn-nav" style="background:#888; color:white; padding: 8px 12px; font-size: 0.9rem;" onclick="showSettings()">⚙️ Nastavení</button>
-                <button class="btn-nav" style="background:#444; color:white; padding: 8px 12px; font-size: 0.9rem;" onclick="showStats()">📊 Analytika</button>
-                <button class="close-cart-btn" onclick="toggleMobileCart()">&times;</button>
-            </div>
-        </div>
-        <div class="cart-list" id="cart-list"></div>
-        <div class="cart-total-box">
-            <div id="cart-total" style="font-size: 2.8rem; font-weight: 800; margin-bottom: 15px;">0 Kč</div>
-            <button class="btn-pay" onclick="finishOrder()">ZAPLATIT</button>
-        </div>
-    </aside>
-
-    <!-- OKNO NASTAVENÍ -->
-    <div class="modal" id="settings-modal">
-        <div class="modal-content" style="max-width: 450px; height: auto; border-radius: 25px; padding: 35px;">
-            <button onclick="hideSettings()" style="position:absolute; top:20px; right:25px; background:none; border:none; font-size:2.5rem; cursor:pointer; color: #888;">&times;</button>
-            <h2 style="margin-top:0; color: var(--accent-primary); margin-bottom: 25px;">Nastavení</h2>
-            
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-                <h3 style="margin-top:0; font-size: 1rem; color: #666;">Zařízení (Místo)</h3>
-                <div style="font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 15px;" id="loc-display-settings">Načítám...</div>
-                <button class="btn-archive" style="background: var(--accent-primary);" onclick="updateLocation()">✏️ Změnit místo</button>
-            </div>
-
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
-                <h3 style="margin-top:0; font-size: 1rem; color: #666;">Placení</h3>
-                <label style="cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; color: #444; user-select: none;">
-                    <input type="checkbox" id="use-calculator" checked style="width: 22px; height: 22px; cursor: pointer; accent-color: var(--accent-primary);">
-                    Zobrazit kalkulačku vrácení
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- OKNO ANALYTIKY (Dashboard) -->
-    <div class="modal" id="stats-modal">
-        <div class="modal-content">
-            <button onclick="hideStats()" style="position:absolute; top:20px; right:30px; background:none; border:none; font-size:2.5rem; cursor:pointer;">&times;</button>
-            <h1 style="margin-top:0;">Barový Dashboard</h1>
-
-            <div class="stats-grid">
-                <div class="stat-brick main">
-                    <small>Celková tržba</small>
-                    <strong id="st-total-kc">0 Kč</strong>
-                </div>
-                <div class="stat-brick">
-                    <small>Počet objednávek</small>
-                    <strong id="st-orders-count">0</strong>
-                </div>
-                <div class="stat-brick">
-                    <small>Průměrná útrata na bar</small>
-                    <strong id="st-avg-order">0 Kč</strong>
-                </div>
-            </div>
-
-            <div class="charts-row">
-                <div class="chart-container"><h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">PODÍL TRŽEB (%)</h3><canvas id="chart-pie"></canvas></div>
-                <div class="chart-container"><h3 style="margin:0 0 10px; font-size: 0.9rem; text-align:center;">TRŽBA DLE SKUPIN (Kč)</h3><canvas id="chart-bar"></canvas></div>
-            </div>
-
-            <div class="stats-grid" id="stats-categories-container"></div>
-
-            <div class="history-wrap">
-                <h3>Poslední pohyby</h3>
-                <div class="history-list" id="stats-log"></div>
-                
-                <button class="btn-archive" style="background: #3498db; margin-bottom: 10px;" onclick="stahnoutPDF()">📄 Stáhnout PDF report tržby a skladu</button>
-                <button class="btn-archive" onclick="archiveData()">🗑️ Smazat a archivovat tržbu</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- OKNO PRO PLACENÍ S NUMPADEM VEDLE -->
-    <div class="modal" id="pay-modal">
-        <div class="modal-content" style="max-width: 800px; height: auto; border-radius: 25px; padding: 35px;">
-            <h2 style="margin-top: 0; font-size: 1.8rem; text-align: center; margin-bottom: 25px; color: var(--accent-primary);">Vyúčtování</h2>
-            
-            <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-                
-                <!-- LEVÁ ČÁST: Informace a tlačítka -->
-                <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column;">
-                    <div style="font-size: 1.1rem; color: #666; margin-bottom: 5px;">Celkem k platbě</div>
-                    <div id="pay-total-display" style="font-size: 3.5rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 20px; line-height: 1;">0 Kč</div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #555;">Zákazník dává (Kč):</label>
-                        <input type="text" id="pay-input" readonly style="width: 100%; padding: 18px; font-size: 2.2rem; font-weight: 700; text-align: center; border-radius: 12px; border: 2px solid #ddd; outline: none; background: #fff; color: var(--text-main);" placeholder="0">
-                    </div>
-                    
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-                        <div style="font-size: 1.1rem; font-weight: 600; color: #666;">Vrátit zákazníkovi:</div>
-                        <div id="pay-return-display" style="font-size: 2.8rem; font-weight: 800; color: var(--accent-success); margin-top: 5px;">0 Kč</div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 15px;">
-                        <button class="btn-archive" style="flex: 1; background: #aaa; padding: 18px;" onclick="closePayModal()">Zrušit</button>
-                        <button class="btn-pay" style="flex: 1; margin-top: 0; padding: 18px;" onclick="confirmPayment()">HOTOVO</button>
-                    </div>
-                </div>
-
-                <!-- PRAVÁ ČÁST: Numpad -->
-                <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column;">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px; height: 100%; min-height: 320px;">
-                        <button class="btn-num" onclick="numpadPress('7')">7</button>
-                        <button class="btn-num" onclick="numpadPress('8')">8</button>
-                        <button class="btn-num" onclick="numpadPress('9')">9</button>
-                        
-                        <button class="btn-num" onclick="numpadPress('4')">4</button>
-                        <button class="btn-num" onclick="numpadPress('5')">5</button>
-                        <button class="btn-num" onclick="numpadPress('6')">6</button>
-                        
-                        <button class="btn-num" onclick="numpadPress('1')">1</button>
-                        <button class="btn-num" onclick="numpadPress('2')">2</button>
-                        <button class="btn-num" onclick="numpadPress('3')">3</button>
-                        
-                        <button class="btn-num" onclick="numpadPress('back')" style="color: var(--accent-danger);">⌫</button>
-                        <button class="btn-num" onclick="numpadPress('0')">0</button>
-                        <button class="btn-num" onclick="numpadPress('00')">00</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js)";
-        import { getDatabase, ref, push, onValue, set, remove } from "[https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js)";
-
-        // =====================================================================
-        //   HLAVNÍ NASTAVENÍ APLIKACE
-        // =====================================================================
-
-        const TEXTY = {
-            vyzvaMisto: "Napiš kde jsi.(Bar, Výčep, Vstup, Šatna)",
-            chybaPrazdnaKasa: "Kámo tady nic není ale.",
-            dotazArchivace: "Fakt to chceš smazat? Mám archiv a vím kdo to maže:D",
-            uspechArchivace: "Vymazáno. (Pořád mám archiv:D)"
-        };
-
-        const KATEGORIE = [
-            { id: "Bar", btnText: "🥃 Bar", color: "#e74c3c" },
-            { id: "Výčep",   btnText: "🍺 Výčep",   color: "#2ecc71" },
-            { id: "Vstup",  btnText: "🎟️ Vstup",  color: "#3498db" }
-        ];
-
-        const SORTIMENT = [
-            { n: "Slivovice", c: 50, s: 10, k: "Bar", i: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7oQe8LhowRRBvOgwrYqJjmvaGNqJCaQxKw&s)", v: 0.04, sklad: 1.0 },
-            { n: "Hruškovice", c: 50, s: 10, k: "Bar", i: "🥃", v: 0.04, sklad: 1.5 },
-            { n: "Rum", c: 40, s: 5, k: "Bar", i: "🥃", v: 0.04, sklad: 2.0 },
-            { n: "Pivo 12°", c: 50, s: 10, k: "Výčep", i: "🍺", v: 0.5, sklad: 30.0 },
-            { n: "Pivo 10°", c: 40, s: 5, k: "Výčep", i: "🍺", v: 0.5, sklad: 50.0 },
-            { n: "Vstupné 18+", c: 200, s: 0, k: "Vstup", i: "🎟️", v: 1, sklad: 500 },
-            { n: "Vstupné pod 18", c: 100, s: 0, k: "Vstup", i: "🎟️", v: 1, sklad: 500 }
-        ];
-
-        const FIREBASE_CONFIG = {
-            apiKey: "AIzaSyABLHGo6EOkxH18T085E5ZC0T-5IDjS2AU",
-            authDomain: "chasapp-6767.firebaseapp.com",
-            databaseURL: "[https://chasapp-6767-default-rtdb.europe-west1.firebasedatabase.app](https://chasapp-6767-default-rtdb.europe-west1.firebasedatabase.app)",
-            projectId: "chasapp-6767",
-            storageBucket: "chasapp-6767.firebasestorage.app",
-            messagingSenderId: "43938163594",
-            appId: "1:43938163594:web:c93eca87f35d47c4eff673"
-        };
-
-        const app = initializeApp(FIREBASE_CONFIG);
-        const db = getDatabase(app);
-        const barRef = ref(db, 'bar_data/historie');
-
-        let kosik = {};
-        let filtr = 'vše';
-        let isHappy = false;
-        let happyEnd = null;
-        let timerId = null;
-        let historie = [];
-        let chartPie = null, chartBar = null;
-        let locID = localStorage.getItem('loc_id') || 'Bar';
-        let aktualniKPlatbe = 0; 
-
-        document.getElementById('loc-display-settings').innerText = `📍 ${locID}`;
-
-        // Zpřístupnění přechodu na Fullscreen
-        window.toggleFullScreen = () => {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                 const docElm = document.documentElement;
                 if (docElm.requestFullscreen) {
